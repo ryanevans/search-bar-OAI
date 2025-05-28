@@ -1,0 +1,2331 @@
+:root {
+  /* Color Palette */
+  --color-black: #000000;
+  --color-white: #ffffff;
+  
+  --color-text-primary: #222222;
+  --color-text-secondary: #555555;
+  --color-text-muted: #777777;
+
+  --color-border-light: #e0e0e0;
+  --color-border-medium: #cccccc;
+  
+  --color-background-page: #f9f9f9;
+  --color-background-card: var(--color-white);
+  --color-background-modal-overlay: rgba(0, 0, 0, 0.6);
+
+  --color-accent-primary: #FF385C; /* Example: Airbnb pink/red for likes */
+  --color-accent-interactive: #007bff; /* Example: Standard blue for interactive elements */
+
+  /* Typography */
+  --font-primary: "Nunito Sans", sans-serif;
+  
+  /* Spacing (optional, but good practice) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* Borders & Shadows (optional) */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Basic Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* HTML Base Styles */
+html {
+  font-family: var(--font-primary);
+  font-size: 16px; /* Standard base font size */
+  line-height: 1.5; /* Improves readability */
+  color: var(--color-text-primary);
+  background-color: var(--color-white); /* Set default to white */
+}
+
+body {
+  -webkit-font-smoothing: antialiased; /* Smoother fonts on WebKit browsers */
+  -moz-osx-font-smoothing: grayscale; /* Smoother fonts on Firefox */
+  background-color: var(--color-white); /* Ensure body has white background */
+}
+
+/* ====================================
+   Base Element Styling & Utilities
+   ==================================== */
+
+/* Default Button Reset and Base Styles */
+.btn {
+  display: inline-flex; /* Good for aligning text/icons if any */
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-primary);
+  font-size: 1em; /* Default, can be overridden */
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid transparent; /* Default to no border, can be added by modifiers */
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  background-color: transparent; /* Default, usually overridden */
+  color: var(--color-text-primary); /* Default, usually overridden */
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent-interactive);
+  outline-offset: 2px;
+}
+
+/* Remove default button styling for specific cases if needed by overriding */
+.btn.reset-appearance {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+
+.btn-link { /* To be used with .btn and .reset-appearance */
+  color: var(--color-accent-interactive);
+  text-decoration: none; /* No underline by default */
+  font-weight: 500; /* Ensure it has a bit of weight, as reset-appearance uses font:inherit */
+}
+
+.btn-link:hover,
+.btn-link:focus-visible { /* :focus-visible for keyboard users */
+  color: #0056b3; /* A common darker shade for interactive blue on hover/focus */
+  text-decoration: underline;
+}
+
+
+/* ====================================
+   Global Styles & Layout Utilities
+   ==================================== */
+
+.wrapper {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-lg);
+  padding-right: var(--space-lg);
+}
+
+/* Special case for the search bar wrapper to extend to full width */
+.wrapper:has(.unified-search-bar-container) {
+  max-width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+  background-color: var(--color-background-page); /* Light grey background for the header area */
+  padding-bottom: 1px; /* Ensure the background extends to the border */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--space-md);
+  padding-bottom: var(--space-md);
+  padding-left: var(--space-lg); /* Match wrapper or be independent */
+  padding-right: var(--space-lg);
+  background-color: var(--color-background-page); /* Light grey background for the header area */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-logo img {
+  height: 30px; /* Adjust as needed */
+}
+
+.header-nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-nav-links button {
+  background: none;
+  border: none;
+  padding: var(--space-sm) var(--space-md);
+  margin: 0 var(--space-md);
+  cursor: pointer;
+  font-size: 1em;
+  font-family: var(--font-primary);
+  color: var(--color-text-secondary);
+  position: relative;
+}
+
+.header-nav-links button.active-header-link,
+#explore-btn {
+  color: var(--color-black);
+  font-weight: bold;
+  position: relative;
+}
+
+.header-nav-links button.active-header-link::after,
+#explore-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: black;
+  border-radius: 1.5px;
+}
+
+.header-user-menu img {
+  height: 30px; /* Adjust as needed */
+  border-radius: 50%;
+}
+
+.footer {
+  padding: var(--space-lg);
+  text-align: center;
+  font-size: 0.875em;
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border-light);
+  margin-top: var(--space-xl);
+  margin-bottom: 60px; /* Add margin to prevent overlap with fixed mobile nav */
+}
+
+/* Mobile Bottom Navigation Styles */
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  text-align: center;
+  font-size: 0.75rem; /* Smaller text for nav items */
+  color: var(--color-text-muted); /* De-emphasized text color */
+  cursor: pointer;
+  padding: var(--space-xs); /* Minimal padding for the item itself */
+}
+
+.mobile-nav-item .nav-icon {
+  width: 24px; 
+  height: 24px; 
+  margin-bottom: var(--space-xs);
+  opacity: 0.7; /* De-emphasized icon */
+  transition: opacity 0.2s ease-in-out;
+}
+
+.mobile-nav-item > span { /* Target the text span directly */
+  transition: color 0.2s ease-in-out, font-weight 0.2s ease-in-out;
+}
+
+.mobile-nav-item.active {
+  color: var(--color-text-primary); /* Dark text color for active item */
+  font-weight: 600; /* Slightly bolder for active item */
+}
+
+.mobile-nav-item.active .nav-icon {
+  opacity: 1; /* Full opacity for active icon */
+}
+
+/* Media query to show/hide mobile bottom nav */
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-white);
+    border-top: 1px solid var(--color-border-light);
+    padding: var(--space-md);
+    display: flex;
+    justify-content: space-around;
+    z-index: 1000;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-bottom-nav {
+    display: none;
+  }
+}
+
+/* ====================================
+   Component: Filter Bar
+   ==================================== */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap to the next line */
+  align-items: center;
+  gap: var(--space-md);
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-lg);
+  /* background-color: var(--color-white); */ /* Optional: if filter bar needs a distinct background */
+  /* border-bottom: 1px solid var(--color-border-light); */ /* Optional */
+}
+
+.custom-select-wrapper {
+  position: relative;
+  display: inline-block; /* To wrap select and arrow appropriately */
+}
+
+.custom-select-wrapper select {
+  padding: var(--space-sm) var(--space-md);
+  padding-right: var(--space-xl); /* Space for the arrow */
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-white);
+  font-family: var(--font-primary);
+  font-size: 0.9em;
+  color: var(--color-text-secondary);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  min-width: 150px; /* Example min-width */
+}
+
+.custom-select-wrapper .custom-select-arrow {
+  position: absolute;
+  top: 50%;
+  right: var(--space-sm);
+  transform: translateY(-50%);
+  width: 12px; /* Adjust size as needed */
+  height: 12px;
+  pointer-events: none; /* So it doesn't interfere with select click */
+  opacity: 0.6;
+}
+
+/* ====================================
+   Component: Event Cards & Sections
+   ==================================== */
+.event-section {
+  margin-bottom: var(--space-xl);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md); /* Was var(--space-lg) */
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.5em;  /* Was 1.6em */
+  font-weight: 700; /* Was 600 */
+  color: var(--color-text-primary);
+}
+
+.view-all-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.view-all-controls a {
+  text-decoration: none;
+  color: var(--color-black);
+  font-weight: 500;
+}
+
+.view-all-controls a:hover {
+  color: var(--color-text-secondary); /* Slightly lighter black on hover */
+  text-decoration: underline;
+}
+
+.arrow-btn {
+  background: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.arrow-btn:hover {
+  background-color: #f0f0f0;
+  box-shadow: var(--shadow-sm);
+}
+
+.arrow-btn img {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+.event-cards-container {
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: 1fr; /* Default to 1 column */
+}
+
+/* Responsive grid columns */
+@media (min-width: 768px) {
+  .event-cards-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .event-cards-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.event-card {
+  position: relative; /* For absolute positioning of heart icon */
+  background: var(--color-background-card);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden; /* To clip image corners */
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border-light); /* Adding subtle grey border */
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out;
+}
+
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-medium); /* Slightly darker border on hover */
+}
+
+.event-card .event-image {
+  width: 100%;
+  height: 180px; /* Fixed height for consistency */
+  display: block;
+  object-fit: cover; /* Crop image to fit */
+}
+
+.card-content {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Allows card-meta to push to bottom */
+}
+
+.card-content h3 {
+  font-size: 1.1em; 
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-primary);
+  /* For multi-line truncation (optional) */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: calc(1.35em * 2); /* Reserve space for 2 lines */
+}
+
+.card-meta {
+  margin-top: auto; /* Pushes this block to the bottom of card-content */
+  padding-top: var(--space-sm);
+  font-size: 0.9em;
+  color: var(--color-text-secondary);
+}
+
+.details-row {
+  display: flex;
+  align-items: flex-start; /* Align icon with first line of multi-line text */
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.details-row:last-child {
+  margin-bottom: 0;
+}
+
+.details-row img {
+  width: 14px;
+  height: 14px;
+  margin-top: 3px; /* Align icon better with text lines */
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.venue-location-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.venue-name {
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.3;
+}
+
+.venue-address {
+  font-size: 0.9em;
+  color: var(--color-text-muted);
+  line-height: 1.3;
+  /* Optional: Truncate long addresses */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.see-more-container {
+    text-align: center;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-xl);
+}
+
+.see-more-btn {
+  display: block;
+  min-width: 200px;
+  padding: var(--space-md) var(--space-lg); /* Larger padding than base .btn */
+  border-radius: var(--border-radius-lg); /* Larger radius than base .btn */
+  font-weight: 600; /* Slightly bolder than base .btn */
+  margin: var(--space-xl) auto;
+  color: var(--color-text-primary); /* Override .btn-secondary's blue text */
+  border: 1px solid var(--color-border-medium); /* Override .btn-secondary's blue border */
+}
+
+.see-more-btn:hover {
+  color: var(--color-text-primary); /* Ensure text color is what's expected on hover */
+  border-color: var(--color-text-primary);
+  background-color: #f8f8f8;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Phase 2: Core Interactions CSS */
+
+/* Component: Heart Icon (within Event Card) */
+.heart-icon {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  width: 24px; /* Adjust as needed */
+  height: 24px;
+  cursor: pointer;
+  fill: none; /* SVG container transparent */
+  z-index: 10; /* Ensure it's above the image */
+}
+
+.heart-icon .heart-fill {
+  fill: rgba(0,0,0,0.5); /* Default: 50% black interior */
+  transition: fill 0.15s ease;
+}
+
+.heart-icon .heart-outline {
+  fill: none;
+  stroke: var(--color-white);
+  stroke-width: 1.5px; /* Adjust for desired outline thickness */
+}
+
+.heart-icon.liked .heart-fill {
+  fill: var(--color-accent-primary); /* LIKED: Accent color interior */
+}
+
+/* ====================================
+   Component: Modals (General)
+   ==================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-background-modal-overlay);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 0.3s, opacity 0.3s ease; /* Delay visibility for opacity transition */
+}
+
+.modal-overlay.visible {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.modal-content {
+  background: var(--color-white);
+  padding: var(--space-lg) var(--space-xl);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+  width: 90%;
+  max-width: 500px; /* Default max-width */
+  position: relative;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.visible .modal-content {
+  transform: scale(1);
+}
+
+/* Modal Header (shared styles) */
+.modal-header {
+  display: flex;
+  justify-content: center; /* Title centered by default */
+  align-items: center;
+  position: relative; 
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.modal-title {
+  font-size: 1.25em; 
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+/* Generic Close Button (X) for Modals and other components */
+/* Assumes .btn class is also applied in HTML for base resets and focus */
+.btn-close-modal {
+  /* Extends .btn implicitly via HTML, or explicitly add .btn class in HTML */
+  /* We'll assume .btn is added in HTML for these properties to be additive */
+  background: none; /* Override .btn */
+  border: none; /* Override .btn */
+  font-size: 1.8em;
+  font-weight: 300;
+  color: var(--color-text-muted);
+  padding: 0 var(--space-sm); /* Override .btn padding for a tighter fit */
+  line-height: 1;
+  position: absolute;
+  top: var(--space-md); 
+  right: var(--space-md);
+  /* cursor: pointer; from .btn */
+  z-index: 10;
+  border-radius: 50%; /* Make it circular for a common 'x' button style */
+  width: 32px; /* Fixed size for consistency */
+  height: 32px;
+}
+
+.btn-close-modal:hover {
+  background-color: rgba(0,0,0,0.05);
+  color: var(--color-text-primary);
+}
+
+.modal-body {
+  /* Styles for form groups, inputs will be added in later phases */
+  margin-bottom: var(--space-lg);
+}
+
+/* Modal Footer (shared styles for button layout) */
+.modal-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-border-light);
+}
+
+/* Example: Save Feed Modal footer button alignment */
+#saveFeedModalOverlay .modal-footer {
+  justify-content: space-between;
+}
+
+/* Example: Share Feed Modal footer button alignment */
+#shareFeedModalOverlay .modal-footer {
+  justify-content: center; /* Center the single Close button */
+}
+
+/* Specific styling for buttons inside modals */
+.modal-footer .btn + .btn {
+  margin-left: var(--space-sm); /* Add space between buttons in the footer */
+}
+
+/* Primary action button style */
+.btn-primary {
+  background-color: var(--color-accent-interactive);
+  color: var(--color-white);
+  border-color: var(--color-accent-interactive); /* Ensure border matches if .btn had a transparent one */
+}
+
+.btn-primary:hover {
+  background-color: #0069d9; /* Darker shade of --color-accent-interactive */
+  border-color: #0069d9;
+}
+
+.btn-primary:active {
+  background-color: #005cbf; /* Even darker shade */
+  border-color: #005cbf;
+}
+
+/* Secondary action button style (outline or lighter fill) */
+.btn-secondary {
+  background-color: var(--color-white);
+  color: var(--color-accent-interactive);
+  border: 1px solid var(--color-accent-interactive);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(0, 123, 255, 0.05); /* Light tint of --color-accent-interactive */
+}
+
+/* Custom styling for the See More button */
+.see-more-btn {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-medium);
+  transition: border-color 0.2s ease-in-out;
+}
+
+.see-more-btn:hover {
+  background-color: transparent;
+  border-color: black;
+}
+
+.btn-secondary:active {
+  background-color: rgba(0, 123, 255, 0.1); /* Slightly darker tint */
+}
+
+.filter-bar .filter-action-link:hover {
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+/* Filter Bar Refinements */
+.filter-bar {
+  /* Original styles: display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center; padding: var(--space-md) 0; */
+  gap: var(--space-md); /* Increased gap for better separation */
+  padding-bottom: var(--space-lg); /* More space below filter bar */
+}
+
+/* Ensure consistent vertical alignment for all filter bar items */
+.filter-bar > * {
+  margin-bottom: var(--space-sm); /* Add some bottom margin for wrapped items */
+}
+
+/* Apply border-radius to the wrapper for consistent focus outline */
+.custom-select-wrapper {
+  border-radius: var(--border-radius-md); /* Match select's border-radius */
+  /* position: relative; /* Already should be there for the arrow */ 
+}
+
+/* Style for when the select element within the wrapper has focus */
+.custom-select-wrapper select:focus {
+  outline: none; /* Remove default outline from select, as wrapper will show focus */
+}
+
+.custom-select-wrapper:focus-within {
+  outline: 2px solid var(--color-accent-interactive); /* Use a distinct focus color */
+  outline-offset: 1px; /* Optional: to prevent outline from overlapping border */
+  /* border-radius is inherited or should be set on the wrapper if not already */
+}
+
+/* Active/Selected Filter State (Visual Cue) */
+/* This class would be added by JS when a filter is active (not default option) */
+.custom-select-wrapper.filter-selected select,
+.custom-select-wrapper.filter-selected select:focus { /* Maintain selected style on focus */
+  border-color: var(--color-accent-primary);
+  font-weight: 600; /* Make text slightly bolder */
+  color: var(--color-text-primary);
+}
+
+/* Optionally, style the custom arrow if it's an SVG that can change color */
+/* For the current img, a border on the select is more straightforward */
+
+/* ====================================
+   Component: Share Feed Modal
+   ==================================== */
+
+/* Share Feed Modal - Input Group (Link) */
+#shareFeedModalOverlay .input-wrapper {
+  position: relative;
+  display: flex; /* Align input and button */
+}
+
+#shareFeedModalOverlay #shareFeedLink {
+  flex-grow: 1;
+  padding-right: 45px; /* Space for the copy button */
+  /* Assuming general input styles are already in place */
+}
+
+#shareFeedModalOverlay .copy-btn {
+  position: absolute;
+  right: var(--space-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-xs);
+}
+
+#shareFeedModalOverlay .copy-btn .icon-svg {
+  width: 18px; /* Adjust size as needed */
+  height: 18px;
+  vertical-align: middle;
+}
+
+/* Collapsible Personal Message Section */
+.collapsible-section {
+  margin-top: var(--space-lg);
+  border-top: 1px solid var(--color-border-light);
+  padding-top: var(--space-md);
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.collapsible-toggle {
+  background: none;
+  border: none;
+  font-family: var(--font-primary);
+  font-size: 1em;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.collapsible-toggle .icon-svg {
+  transition: transform 0.2s ease-in-out;
+}
+
+.collapsible-toggle[aria-expanded="true"] .icon-svg {
+  transform: rotate(90deg);
+}
+
+#personalMessageContent textarea {
+  width: 100%;
+  padding: var(--space-sm);
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-primary);
+  font-size: 0.95em;
+  resize: vertical;
+  margin-top: var(--space-sm);
+}
+
+/* Share with Friends Section */
+.share-options {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.share-options p strong {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+  display: block;
+}
+
+.friend-selector-placeholder {
+  background-color: #f0f0f0; /* Placeholder background */
+  border: 1px dashed var(--color-border-medium);
+  padding: var(--space-lg);
+  text-align: center;
+  color: var(--color-text-muted);
+  border-radius: var(--border-radius-md);
+  font-size: 0.9em;
+}
+
+/* Specific styling for buttons inside Share Modal, if different from general modal buttons */
+/* #sendInvitesBtn uses .modal-btn and .modal-btn-primary by default */
+
+/* --- Where (Location) Dropdown Styles --- */
+#search-where {
+  position: relative; /* For positioning the dropdown */
+}
+
+.where-dropdown {
+  position: absolute;
+  top: calc(100% + 5px); /* Position below the segment with a small gap */
+  left: 0; /* Align with the left edge of the segment */
+  width: 320px; /* Or adjust as needed, mockup looks quite wide */
+  min-width: 100%; /* Ensure it's at least as wide as the segment */
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--border-radius-lg); /* Larger radius like mockup */
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-sm) 0; /* Padding top/bottom, no side padding for full-width options */
+  z-index: 1003; /* Ensure it's above other content if overlapping */
+  display: none; /* Hidden by default */
+  max-height: 300px; /* Limit height and allow scrolling */
+  overflow-y: auto;
+}
+
+.location-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: var(--space-sm) var(--space-md);
+  width: 100%;
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  color: var(--color-text-primary);
+  box-sizing: border-box; /* Include padding in width */
+}
+
+.location-option:hover {
+  background-color: var(--color-background-subtle);
+}
+
+.location-option.selected {
+  background-color: var(--color-background-selected); /* Or a distinct selected color */
+  /* Potentially add a visual indicator like a checkmark or bold text */
+}
+
+.location-main-text {
+  font-size: 0.9375rem; /* 15px */
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+
+.location-sub-text {
+  font-size: 0.8125rem; /* 13px */
+  color: var(--color-text-secondary);
+}
+
+/* --- Unified Search Mobile Button --- */
+.unified-search-start-btn-mobile {
+  display: none; /* Hidden by default, shown via media query */
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-light); /* Changed to light grey */
+  border-radius: 50px; /* Fully rounded */
+  color: var(--color-black);
+  font-family: var(--font-family-primary);
+  font-size: 1rem; /* Adjust as needed */
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  flex: 1; /* Take up available space */
+  min-width: 0; /* Allow shrinking below min-content if needed */
+  max-width: calc(100% - 72px); /* Leave space for the bookmark button + gap */
+  box-shadow: var(--shadow-sm);
+}
+
+.unified-search-start-btn-mobile svg {
+  margin-right: var(--space-sm);
+  fill: var(--color-black);
+  vertical-align: middle; /* Ensure vertical alignment */
+}
+
+/* Style the default content container */
+.search-btn-default-content {
+  display: flex;
+  align-items: center; /* Vertically center children */
+  justify-content: center;
+}
+
+/* Ensure the text is aligned properly */
+.search-text-default {
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.unified-search-start-btn-mobile:hover {
+  background-color: var(--color-background-subtle);
+  box-shadow: var(--shadow-md);
+}
+
+/* --- Mobile My Feeds Selector --- */
+#mobile-my-feeds-selector {
+  display: none; /* Hidden by default – shown via JS only when My Feeds is active on mobile */
+  /* Replicate styles from .unified-search-start-btn-mobile */
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: 50px; /* Fully rounded */
+  color: var(--color-black);
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  flex: 1;
+  min-width: 0;
+  max-width: calc(100% - 72px); /* Match search button sizing */
+  box-shadow: var(--shadow-sm);
+  position: relative; /* For dropdown positioning directly under it */
+}
+
+#mobile-my-feeds-selector:hover {
+  background-color: var(--color-background-subtle);
+  box-shadow: var(--shadow-md);
+}
+
+#mobile-my-feeds-selector .dropdown-carat {
+  margin-left: var(--space-sm);
+  width: 16px; /* Adjust if chevron-down.svg has different optimal size */
+  height: 16px;
+  vertical-align: middle; /* Helps align with text */
+}
+
+/* --- Mobile Feeds Dropdown --- */
+.mobile-feeds-dropdown {
+  display: none; /* Initially hidden, controlled by JS */
+  position: absolute;
+  top: calc(100% + 4px); /* Position below the selector, with a small gap */
+  left: 0;
+  width: 100%; /* Match the width of the selector */
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-medium);
+  border-radius: 12px; /* More rounded appearance */
+  box-shadow: var(--shadow-md);
+  z-index: 1100;
+  padding: var(--space-sm) 0;
+}
+
+.mobile-feed-option {
+  display: block;
+  width: 100%;
+  padding: var(--space-md) var(--space-lg); /* More generous padding */
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem; /* Match selector font size */
+  color: var(--color-text-primary);
+  transition: background-color 0.2s;
+}
+
+.mobile-feed-option:hover,
+.mobile-feed-option:focus {
+  background-color: var(--color-background-subtle);
+  outline: none;
+}
+
+/* --- Responsive Adjustments for Search Bar --- */
+/* Desktop-only elements */
+@media (min-width: 769px) {
+  .mobile-bottom-nav {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex; /* Show the nav on mobile */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-white);
+    border-top: 1px solid var(--color-border-light);
+    justify-content: space-around;
+    padding-top: var(--space-sm); 
+    padding-bottom: var(--space-sm); 
+    z-index: 1000; 
+  }
+
+  .footer {
+    margin-bottom: 60px; /* Ensure footer content doesn't hide behind nav. Value should be >= nav height */
+  }
+  .unified-search-bar-container {
+    padding: var(--space-md) var(--space-md); /* Add some padding around the button */
+    justify-content: center; /* Center the button */
+    position: relative; /* For absolute positioning of bookmark icon */
+  }
+  
+  /* Container for search and bookmark elements */
+  .mobile-search-elements-container {
+    position: relative; /* For dropdown positioning */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  /* Bookmark button styling */
+  .mobile-bookmark-button {
+    background-color: var(--color-black);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+    padding: 0;
+  }
+  
+  .mobile-bookmark-button:hover {
+    background-color: #333;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .mobile-bookmark-button:active {
+    transform: scale(0.95);
+  }
+  
+  .bookmark-icon-img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Hide desktop-only elements */
+  .desktop-only,
+  .header-logo,
+  .header-user-menu {
+    display: none !important;
+  }
+  
+  /* Bottom navigation styles */
+  .mobile-bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 64px; /* Slightly taller for more padding */
+    background-color: var(--color-white);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 6px 0; /* Add some vertical padding */
+  }
+  
+  .mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 0;
+    width: 33.333%;
+    cursor: pointer;
+    color: var(--color-text-primary); /* Make text black */
+    opacity: 0.5; /* Default state is inactive/dimmed */
+  }
+  
+  .mobile-nav-item.active {
+    color: var(--color-text-primary); /* Keep text black even when active */
+    opacity: 1; /* Full opacity for active tab */
+  }
+  
+  .mobile-nav-item .nav-icon {
+    width: 22px; /* Slightly smaller icon */
+    height: 22px; /* Slightly smaller icon */
+    margin-bottom: 6px; /* More space between icon and text */
+  }
+  
+  .mobile-nav-item span {
+    font-size: 11px; /* Slightly smaller text */
+    font-weight: 500;
+    letter-spacing: 0.2px; /* Improve text legibility */
+  }
+  
+  .mobile-nav-item.active span {
+    font-weight: 700; /* Bold text for active tab */
+  }
+  
+  /* Add padding to the bottom of the page to accommodate the fixed nav */
+  main {
+    padding-bottom: 60px;
+  }
+  
+  /* Adjust footer to appear above the bottom nav */
+  .footer {
+    margin-bottom: 60px;
+  }
+
+  .unified-search-bar {
+    display: none !important; /* Hide full search bar on small screens */
+  }
+
+  .unified-save-feed-btn {
+    display: none !important; /* Hide save feed button on small screens */
+  }
+
+  .unified-search-start-btn-mobile {
+    display: inline-flex; /* Show mobile button */
+  }
+
+  /* Optional: Adjust header or other elements for smaller screens if needed */
+  .header-nav-links button {
+    font-size: 0.875rem;
+    padding: var(--space-xs) var(--space-sm);
+  }
+}
+
+/* --- Mobile Filter Overlay Styles --- */
+.mobile-filter-overlay-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-background-page); /* Light grey page background */
+  z-index: 2000; /* Higher than other elements */
+  display: flex; /* Using flex to help center content if needed, though content will be full height */
+  flex-direction: column;
+  overflow-y: auto;
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(100%); /* Start off-screen */
+}
+
+.mobile-filter-overlay-container.active {
+  transform: translateY(0%); /* Slide in from bottom */
+}
+
+.mobile-filter-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Take full height of the overlay */
+  width: 100%;
+  max-width: 100vw;
+  padding: var(--space-lg);
+  box-sizing: border-box;
+}
+
+.mobile-filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--space-md);
+  margin-bottom: var(--space-lg);
+  /* No border-bottom in mockup, keeping it clean */
+}
+
+.mobile-filter-header h2 {
+  font-size: 1.75rem; /* Larger title */
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.btn-close-mobile-filter {
+  background: none;
+  border: none;
+  padding: var(--space-xs);
+  cursor: pointer;
+  color: var(--color-text-primary);
+}
+
+.btn-close-mobile-filter svg {
+  display: block; /* Remove extra space below SVG */
+}
+
+.mobile-filter-options {
+  flex-grow: 1; /* Takes up available space */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm); /* Space between filter rows */
+}
+
+.filter-row {
+  /* Flex properties moved to .filter-row-header */
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-md); /* Uniform padding, replaces original padding */
+  /* The original border-bottom is now replaced by the comprehensive 'border' property above. */
+  /* Spacing between rows is managed by the 'gap' property in the parent '.mobile-filter-options'. */
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.filter-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%; /* Ensure it takes full width available from parent */
+}
+
+.filter-row:last-child {
+  border-bottom: none;
+}
+
+.filter-row span:first-child {
+  font-weight: 500; /* Slightly bolder label */
+}
+
+.filter-value {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+.filter-value svg {
+  margin-left: var(--space-xs);
+  fill: var(--color-text-secondary);
+  transition: transform 0.3s ease-in-out;
+}
+
+.filter-row[aria-expanded="true"] .filter-value svg.accordion-chevron {
+  transform: rotate(90deg);
+}
+
+/* --- Location Accordion Panel Styles --- */
+.location-accordion-panel,
+.timeframe-accordion-panel,
+.activity-accordion-panel { /* Base styles for collapsed state */
+  width: 100%;
+  padding: 0;
+  margin-top: var(--space-md); /* Space between the header and the content */
+  transition: max-height 0.3s ease-out;
+  opacity: 0;
+  display: none; /* Start hidden, JavaScript will toggle display */
+  transition: opacity 0.2s ease;
+  max-height: 0; /* Start collapsed */
+  overflow: hidden;
+}
+
+.filter-row[aria-expanded="true"] > .location-accordion-panel,
+.filter-row[aria-expanded="true"] > .timeframe-accordion-panel,
+.filter-row[aria-expanded="true"] > .activity-accordion-panel { /* Styles for expanded state */
+  opacity: 1;
+  display: block;
+  max-height: 500px; /* Large enough to contain our content */
+  overflow: visible;
+  /* The transition combined with max-height provides a smooth open/close effect */
+}
+
+.location-accordion-panel .location-search-input-container {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-background-default);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.location-accordion-panel .location-search-input-container .search-icon {
+  fill: var(--color-text-secondary);
+  margin-right: var(--space-sm);
+}
+
+.location-accordion-panel #mobile-location-search-input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-size: 1rem;
+  color: var(--color-text-primary);
+}
+
+.location-accordion-panel #mobile-location-search-input::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.location-accordion-panel .current-location-btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-md) 0; /* Align with filter-row typical padding */
+  background-color: transparent;
+  border: none;
+  /* border-top: 1px solid var(--color-border-subtle); */ /* Optional: if separation is needed from input */
+  font-size: 1rem;
+  color: var(--color-accent-interactive);
+  cursor: pointer;
+  text-align: left;
+}
+
+.location-accordion-panel .current-location-btn svg {
+  fill: var(--color-accent-interactive);
+  margin-right: var(--space-sm);
+}
+
+.location-accordion-panel .location-search-results {
+  /* Styles for results, if any are shown directly here */
+  padding-top: var(--space-sm);
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.mobile-filter-actions {
+  display: flex;
+  gap: var(--space-md);
+  padding-top: var(--space-xl);
+  margin-top: auto; /* Push to bottom if content is short */
+  width: 100%;
+}
+
+.mobile-filter-actions .btn {
+  flex-grow: 1;
+  padding: var(--space-md) var(--space-lg);
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--border-radius-lg); /* More rounded buttons like mockup */
+}
+
+#mobile-filter-reset-btn {
+  background-color: var(--color-background-default);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-neutral-strong);
+}
+
+#mobile-filter-reset-btn:hover {
+  background-color: var(--color-background-subtle);
+}
+
+#mobile-filter-apply-btn {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  border: 1px solid var(--color-black);
+}
+
+#mobile-filter-apply-btn:hover {
+  background-color: var(--color-text-primary); /* Slightly lighter black on hover */
+}
+
+/* --- Accordion Panel Styles for Mobile Filters --- */
+.timeframe-accordion-panel,
+.activity-accordion-panel {
+  padding: var(--space-md) var(--space-md) var(--space-lg);
+}
+
+/* Timeframe filter uses two-column grid layout */
+.timeframe-accordion-panel .mobile-filter-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+  width: 100%;
+}
+
+/* Activity filter uses flowing flexbox layout */
+.activity-accordion-panel .mobile-filter-options-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm); /* Moderate spacing between pills (8px) */
+  width: 100%;
+}
+
+/* Mobile option item base styles */
+.date-option-item.mobile, 
+.activity-option-item.mobile {
+  margin: 0;
+}
+
+/* Grid-specific styles for date options */
+.date-option-item.mobile {
+  width: 100%; /* Take full width of grid cell */
+}
+
+/* Flow-specific styles for activity options */
+.activity-option-item.mobile {
+  width: auto; /* Allow natural sizing based on content */
+}
+
+.date-option-checkbox.mobile {
+  display: none; /* Hide the actual checkbox */
+}
+
+/* Base styles for all mobile option labels */
+.date-option-label.mobile,
+.activity-option-label.mobile {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-medium);
+  padding: var(--space-sm) var(--space-md);
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.875em;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  line-height: 1.3;
+  user-select: none;
+}
+
+/* Grid-specific styles for date labels */
+.date-option-label.mobile {
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Flow-specific styles for activity labels */
+.activity-option-label.mobile {
+  border-radius: 50px; /* More rounded pill shape to match desktop */
+  display: inline-block; /* Allow natural width based on content */
+  white-space: nowrap; /* Prevent text wrapping inside the pill */
+}
+
+/* Hover styles */
+.date-option-label.mobile:hover,
+.activity-option-label.mobile:hover {
+  border-color: var(--color-text-primary);
+}
+
+/* Selected state for date options (grid layout) */
+.date-option-checkbox.mobile:checked + .date-option-label.mobile {
+  background-color: var(--color-background-page);
+  color: var(--color-text-primary);
+  border: 2px solid var(--color-text-primary);
+  /* Adjust padding to account for thicker border */
+  padding: calc(var(--space-sm) - 1px) calc(var(--space-md) - 1px);
+}
+
+/* Selected state for activity options (flow layout) */
+.activity-option-checkbox.mobile:checked + .activity-option-label.mobile {
+  background-color: var(--color-background-page);
+  color: var(--color-text-primary);
+  border: 2px solid var(--color-text-primary);
+  /* Adjust padding to account for thicker border */
+  padding: calc(var(--space-sm) - 1px) calc(var(--space-md) - 1px);
+}
+
+/* --- When Dropdown Styles --- */
+#search-when {
+  position: relative; /* For positioning the dropdown */
+}
+
+.when-dropdown {
+  position: absolute;
+  top: calc(100% + 8px); /* Position below the "When" segment with a small gap */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 360px; /* Adjusted for "Next few weekends" */
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-lg); /* Matches mockup rounding */
+  box-shadow: var(--shadow-md);
+  padding: var(--space-md);
+  z-index: 101; /* Above other elements */
+  display: grid; /* Using grid for two columns */
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+}
+
+.date-option {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--border-radius-lg); /* Pill shape */
+  padding: var(--space-sm) var(--space-md);
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.875em;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  display: flex;
+  flex-direction: column; /* Stack main text and subtext */
+  align-items: center;
+  justify-content: center;
+  line-height: 1.3;
+}
+
+.date-option .date-subtext {
+  font-size: 0.85em; /* Smaller for the subtext */
+  font-weight: 400;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.date-option:hover {
+  border-color: var(--color-text-primary);
+}
+
+.date-option.selected {
+  background-color: var(--color-background-page); /* Light grey background (consistent with page bg) */
+  color: var(--color-text-primary); /* Default font color */
+  border: 2px solid var(--color-text-primary); /* Thicker border, darker color for contrast */
+}
+
+.date-option.selected .date-subtext {
+  color: var(--color-text-muted); /* Match non-selected subtext color */
+}
+
+
+/* New styles for checkbox-based date options */
+.date-option-item {
+  display: flex; /* Let the label inside control the content alignment */
+  margin: 0; /* Rely on parent's gap */
+}
+
+.date-option-checkbox {
+  display: none; /* Hide the actual checkbox */
+}
+
+.date-option-label {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-sm) var(--space-md);
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.875em;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.3;
+  width: 100%; /* Make label take full width of its grid cell */
+  user-select: none;
+}
+
+.date-option-label:hover {
+  border-color: var(--color-text-primary);
+}
+
+.date-option-checkbox:checked + .date-option-label {
+  background-color: var(--color-background-page);
+  color: var(--color-text-primary);
+  border: 2px solid var(--color-text-primary);
+  /* Adjust padding to account for thicker border */
+  padding: calc(var(--space-sm) - 1px) calc(var(--space-md) - 1px);
+}
+
+/* Subtext styling within the new label structure (should largely inherit or be covered) */
+.date-option-label .date-subtext {
+  font-size: 0.85em;
+  font-weight: 400;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.date-option-checkbox:checked + .date-option-label .date-subtext {
+  color: var(--color-text-muted);
+}
+
+/* Main content area */
+main.wrapper {
+  background-color: var(--color-white);
+  margin-top: 0;
+  padding-top: var(--space-lg);
+  padding-left: 8%;
+  padding-right: 8%; /* Adding more horizontal spacing */
+}
+
+/* ====================================
+   Component: Unified Search Bar
+   ==================================== */
+/* Container for the unified search bar and the Save Feed button */
+.unified-search-bar-container {
+  background-color: var(--color-background-page); /* Light grey background */
+  padding: var(--space-sm) var(--space-lg) 30px var(--space-lg); /* Top, Right, Bottom (30px), Left */
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  max-width: 960px; /* Default max-width */
+  margin: 0 auto; /* Center the container */
+  transition: max-width 0.3s ease-in-out; /* Smooth transition for width change */
+}
+
+/* Increase max-width when 'My Feeds' filter is active */
+.unified-search-bar-container:has(.unified-search-bar.my-feeds-filter-active) {
+  max-width: 1080px; /* Increased max-width */
+}
+
+/* Full width border underneath the search bar container */
+.unified-search-bar-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100vw; /* Full viewport width */
+  height: 1px;
+  background-color: var(--color-border-light);
+  /* Position the border at the left edge of the screen */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.unified-search-bar {
+  display: flex;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-light); /* Changed to light grey to match header border */
+  border-radius: 50px; /* Fully rounded search bar */
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+  flex-grow: 1; /* Allow search bar to take available space */
+  
+/* --- Mobile Filter Icon --- */
+#mobile-filter-icon-container {
+  /* display: none; /* Hidden by default, JS controls visibility - NOTE: HTML inline style handles initial hide */
+  width: 48px;   /* Same height as the feeds selector for alignment */
+  height: 48px;
+  border-radius: 50%; /* Makes it circular */
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-light); /* Match dropdown */
+  box-shadow: var(--shadow-sm); /* Match dropdown */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px; /* Space between icon and feeds selector */
+  cursor: pointer; /* Indicates it's clickable (optional, but good UX) */
+}
+
+#mobile-filter-icon-container img {
+  width: 20px; /* As specified in the HTML */
+  height: 20px; /* As specified in the HTML */
+  display: block;
+}
+
+/* --- Mobile View Feed Button --- */
+button#mobile-view-feed-button {
+  display: none; /* Hidden by default, controlled by JS */
+  background-color: var(--color-black) !important;
+  border: none !important;
+  border-radius: 50% !important; /* Makes it circular */
+  width: 48px !important;   /* Match mobile-bookmark-button and filter icon */
+  height: 48px !important;
+  min-width: 48px !important; /* Prevent shrinking */
+  display: none; /* Initially hidden, JS will set to flex */
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: var(--shadow-sm) !important;
+  cursor: pointer !important;
+  padding: 0 !important; /* Remove default button padding */
+  margin-left: 8px !important; /* Space from the feeds selector */
+  transition: background-color 0.2s, transform 0.1s !important; /* Smooth transitions */
+  position: relative !important;
+}
+
+/* Override any possible browser default styles */
+button#mobile-view-feed-button:not([disabled]) {
+  background-color: var(--color-black) !important;
+}
+
+/* Target the arrow icon specifically inside mobile-view-feed-button to make it 50% smaller */
+#mobile-view-feed-button .bookmark-icon-img,
+button#mobile-view-feed-button img.bookmark-icon-img,
+button#mobile-view-feed-button .bookmark-button-inner img.bookmark-icon-img {
+  width: 10px !important; /* 50% of original 20px */
+  height: 10px !important; /* 50% of original 20px */
+  max-width: 10px !important;
+  max-height: 10px !important;
+  display: block !important;
+  transform: scale(0.5) !important; /* Additional scaling */
+}
+
+/* End of /Users/ryanevans/Desktop/Domino explanation modal/js/may_19/css/style.css */
+  min-width: 0; 
+}
+
+.search-bar-segment {
+  flex: 1; /* Allow segments to grow, but input placeholder will define initial size perception */
+  padding: 10px var(--space-md); /* Increased vertical padding from var(--space-sm) */
+  cursor: pointer;
+  position: relative; /* For label absolute positioning if needed, or just flow */
+  min-width: 100px; /* Reduced minimum width for each segment */
+}
+
+.search-bar-segment.clickable:hover {
+  background-color: #f0f0f0; /* Light hover for clickable segments */
+}
+
+.search-bar-segment:first-child.clickable:hover {
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+}
+
+.segment-label {
+  display: block;
+  font-size: 0.85em; /* 12px */
+  font-weight: 700;
+  margin-bottom: 0px; /* Reduced space between label and input */
+  color: var(--color-text-primary);
+  padding-left: var(--space-sm); /* Align with input text */
+}
+
+.segment-input {
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  padding: 2px var(--space-sm) 4px; /* Reduced top padding, kept bottom spacing */
+  font-size: 1em; /* 14px */
+  color: var(--color-text-secondary);
+}
+
+/* Style for input when it has a selected value */
+.segment-input.has-value {
+  color: var(--color-text-primary); /* Match label color */
+  font-weight: 700; /* Match label weight */
+}
+
+/* Style placeholders across all browsers */
+.segment-input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1; /* Firefox fix */
+  font-weight: 500; /* Slightly bolder for better readability */
+}
+
+/* WebKit browsers */
+.segment-input::-webkit-input-placeholder {
+  font-weight: 500;
+}
+
+/* Firefox 18- */
+.segment-input:-moz-placeholder {
+  font-weight: 500;
+}
+
+/* Firefox 19+ */
+.segment-input::-moz-placeholder {
+  font-weight: 500;
+}
+
+/* IE 10+ */
+
+@media (min-width: 769px) {
+  .mobile-bottom-nav {
+    display: none; /* Hide mobile nav on desktop */
+  }
+  .footer {
+    margin-bottom: 0; /* Reset footer margin on desktop */
+  }
+}
+.segment-input:-ms-input-placeholder {
+  font-weight: 500;
+}
+
+.segment-input:focus {
+  outline: none;
+}
+
+.search-bar-divider {
+  width: 1px;
+  background-color: var(--color-border-light);
+  height: 32px; /* Adjust to match segment inner height */
+  align-self: center;
+}
+
+.search-bar-button {
+  background-color: var(--color-black); /* Changed from var(--color-accent-primary) */
+  color: var(--color-white);
+  border: none;
+  border-radius: 50%; /* Make it circular */
+  width: 48px; /* Size of the button */
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: var(--space-xs) var(--space-sm) var(--space-xs) var(--space-xs); /* Consistent small margin */
+  padding: 0; /* Reset padding if any from .btn */
+  flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+.search-bar-button:hover {
+  background-color: #333333; /* Darker shade of black/grey for hover */
+}
+
+.search-bar-button svg {
+  width: 20px; /* Adjust icon size as needed */
+  height: 20px;
+  fill: var(--color-white);
+}
+
+/* Save Feed Button Styles */
+.unified-save-feed-btn {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  border: none;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 50px; /* Full rounding now */
+  font-weight: 600;
+  font-size: 0.875em;
+  line-height: 1.5;
+  height: 48px; /* Match search button height */
+  display: inline-flex;
+  align-items: center;
+  /* display: none; /* Controlled by JS */
+}
+
+.unified-save-feed-btn:hover {
+  background-color: #333333;
+  color: var(--color-white);
+}
+
+/* Style for the share icon to make it white */
+.unified-save-feed-btn img.share-icon-white {
+  filter: brightness(0) invert(1);
+}
+
+/* My Feed Pill styles */
+.my-feed-pill-container {
+  display: none; /* Hidden by default, shown by JS when My Feeds is active */
+  margin-bottom: var(--space-sm);
+  position: relative;
+  z-index: 1002; /* Ensure dropdown appears above other elements */
+}
+
+.my-feed-pill {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: 50px;
+  padding: 8px 16px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  min-width: 180px; /* Added min-width to ensure pill has enough space */
+}
+
+.my-feed-pill:hover {
+  background-color: #f8f9fa;
+  border-color: var(--color-border-neutral-strong);
+}
+
+.pill-content {
+  display: flex;
+  align-items: center;
+  width: 100%; /* Ensure content takes full width of pill */
+}
+
+.pill-label {
+  font-size: 0.85em;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.pill-value {
+  font-size: 1em;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.pill-icon {
+  width: 12px;
+  height: 12px;
+  margin-left: auto; /* Push icon to the right */
+}
+
+/* Position the dropdown relative to the pill */
+.my-feed-pill .my-feeds-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 280px;
+  z-index: 1001;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-sm) 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+/* Filter action buttons styles */
+.filter-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs); /* Reduced from var(--space-sm) */
+}
+
+/* Ghost button style */
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-neutral-strong);
+  border-radius: 50px;
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.btn-ghost:hover {
+  background-color: var(--color-background-subtle);
+  border-color: var(--color-text-primary);
+}
+
+/* Icon button style */
+.btn-icon {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.btn-icon:hover {
+  background-color: var(--color-background-subtle);
+}
+
+/* Adjustments for specific segments if needed */
+#search-where { flex-grow: 1.3; } /* Reduced from 1.5 */
+#search-when { flex-grow: 1.2; }
+#search-activity { flex-grow: 1.3; } /* Reduced from 1.5 */
+#search-who { flex-grow: 0.8; } /* Reduced slightly */
+
+
+/* --- Activity Dropdown Styles --- */
+#search-activity {
+  position: relative; /* For absolute positioning of the dropdown */
+}
+
+.activity-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px; /* Reduced width to match narrower search bar */
+  background-color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-md);
+  z-index: 1001;
+  display: flex; /* Changed from grid */
+  flex-wrap: wrap; /* Allow items to wrap */
+  justify-content: flex-start; /* Align items to the start */
+  gap: var(--space-sm);
+}
+
+.activity-option {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-medium); /* Match 'date-option' border */
+  border-radius: 20px; /* Pill shape */
+  padding: var(--space-sm) var(--space-md);
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.875em;
+  font-weight: 500; /* Match 'date-option' font-weight */
+  color: var(--color-text-primary); /* Match 'date-option' text color (black) */
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  line-height: 1.3;
+}
+
+.activity-option:hover {
+  border-color: var(--color-border-medium); /* Slightly darker grey border on hover */
+}
+
+.activity-option.selected {
+  background-color: var(--color-background-page); /* Light grey fill, like 'date-option.selected' */
+  color: var(--color-text-primary); /* Black text for selected */
+  border: 2px solid var(--color-text-primary); /* Thicker black border for selected */
+  /* font-weight will inherit from .activity-option (500), not explicitly bolded */
+}
+
+
+/* New styles for checkbox-based activity options */
+.activity-option-item {
+  display: inline-block; /* Allows items to sit next to each other if dropdown width permits */
+  margin: 0; /* Rely on parent's gap property */
+}
+
+.activity-option-checkbox {
+  display: none; /* Hide the actual checkbox input */
+}
+
+.activity-option-label {
+  display: inline-block; /* Treat label like a button */
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-medium);
+  border-radius: 20px; /* Pill shape */
+  padding: var(--space-sm) var(--space-md);
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.875em;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  line-height: 1.3;
+  user-select: none; /* Prevent text selection when clicking */
+}
+
+.activity-option-label:hover {
+  border-color: black; /* Adding black border on hover */
+  /* background-color: #f8f9fa; */ /* Optional: subtle background change on hover */
+}
+
+.activity-option-checkbox:checked + .activity-option-label {
+  background-color: var(--color-background-page);
+  color: var(--color-text-primary);
+  border: 2px solid var(--color-text-primary);
+  /* Adjust padding to account for the thicker border, maintaining overall size */
+  padding: calc(var(--space-sm) - 1px) calc(var(--space-md) - 1px);
+}
+
+/* --- Group Size Popover Styles --- */
+#search-who {
+  position: relative; /* For popover positioning */
+}
+
+.group-size-popover {
+  position: absolute;
+  top: calc(100% + 5px); /* Position below the segment */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px; /* Adjust as needed, mockup looks fairly wide */
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--border-radius-lg); /* Larger radius like mockup */
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-lg);
+  z-index: 1002; /* Above other dropdowns if they overlap, but below mobile overlay */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.group-size-popover .popover-title {
+  font-size: 0.875rem; /* Smaller title text */
+  color: var(--color-text-secondary);
+  text-align: left;
+  margin-bottom: var(--space-xs);
+}
+
+.group-size-popover .popover-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Distribute space */
+  width: 100%;
+}
+
+.group-size-popover .btn-stepper {
+  background-color: transparent;
+  border: 1px solid var(--color-border-neutral-strong);
+  border-radius: 50%; /* Circular buttons */
+  width: 36px; /* Fixed size for circular buttons */
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.group-size-popover .btn-stepper:hover {
+  background-color: var(--color-background-subtle);
+  border-color: var(--color-brand-primary); /* Highlight on hover */
+}
+
+.group-size-popover .btn-stepper:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: var(--color-border-neutral);
+}
+
+.group-size-popover .btn-stepper svg {
+  fill: currentColor;
+}
+
+.group-size-popover .popover-value {
+  font-size: 1.25rem; /* Larger number display */
+  font-weight: 600;
+  color: var(--color-text-primary);
+  min-width: 30px; /* Ensure space for number */
+  text-align: center;
+}
+
+/* --- Mobile Location Search Screen --- */
+.mobile-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-white);
+  z-index: 1005; /* Higher than the mobile filter overlay */
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%); /* Initially off-screen to the right */
+  transition: transform 0.3s ease-in-out;
+}
+
+.mobile-screen.active {
+  transform: translateX(0%); /* Slide in from the right */
+}
+
+.mobile-screen-header {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-border-neutral);
+  position: relative; /* For absolute positioning of title if needed */
+}
+
+.mobile-screen-back-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  padding: var(--space-xs);
+  margin-right: var(--space-sm);
+  cursor: pointer;
+}
+
+.mobile-screen-back-btn svg {
+  display: block;
+}
+
+.mobile-screen-title {
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: center;
+  flex-grow: 1; /* Allow title to take up space and center */
+  /* If back button takes too much space, adjust margins or use absolute for title */
+  margin-right: 36px; /* Roughly back button width + margin to keep title centered */
+}
+
+.mobile-screen-content {
+  padding: var(--space-md);
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.location-search-input-container {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-background-input);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.location-search-input-container .search-icon {
+  color: var(--color-icon-neutral);
+  margin-right: var(--space-sm);
+}
+
+#mobile-location-search-input {
+  flex-grow: 1;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  color: var(--color-text-input);
+  outline: none;
+}
+
+#mobile-location-search-input::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.current-location-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: var(--space-md);
+  background-color: var(--color-background-subtle);
+  border: 1px solid var(--color-border-neutral);
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-link);
+  cursor: pointer;
+  margin-bottom: var(--space-lg);
+  text-align: center;
+}
+
+.current-location-btn svg {
+  margin-right: var(--space-sm);
+  fill: var(--color-text-link);
+}
+
+.location-search-results {
+  /* Styles for displaying list of results if/when implemented */
+  border-top: 1px solid var(--color-border-neutral);
+}
+/* ----- End of Mobile Location Search Screen ----- */
+
+/* Ensure first and last segments have rounded corners if hover is applied directly */
+/* Styles for the 'My feeds' dropdown */
+.my-feeds-dropdown {
+    position: absolute;
+    top: calc(100% + 5px); /* Position below the segment */
+    left: 0;
+    width: 280px; /* Adjust as needed, similar to other dropdowns */
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-sm) 0;
+    z-index: 1001; /* Ensure it's above content */
+    display: none; /* Controlled by JavaScript */
+    max-height: 240px; /* Adjust as needed */
+    overflow-y: auto;
+}
+
+.feed-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: var(--space-sm) var(--space-md);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    color: var(--color-text-primary);
+    line-height: 1.4; /* Added for better readability */
+}
+
+.feed-option:hover {
+    background-color: var(--color-background-page); /* Light grey hover, consistent with other dropdowns */
+}
+
+.feed-option .feed-main-text {
+    display: block;
+    font-weight: 500; /* Consistent with .location-main-text */
+}
+
+/* Default styling for search bar segments regarding left rounded corners and padding */
+/* Apply standard padding and no left rounding to all segments initially */
+.unified-search-bar .search-bar-segment {
+    padding-left: var(--space-md);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* When 'My feeds' filter is hidden (NO .my-feeds-filter-active on .unified-search-bar): */
+/* #search-where acts as the first segment. */
+.unified-search-bar .search-bar-segment#search-where {
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    padding-left: calc(var(--space-md) + var(--space-xs)); /* Special padding for the visually first segment */
+}
+
+/* When on My Feeds view, ensure search-where is always the first visible segment with proper styling */
+.unified-search-bar.my-feeds-filter-active .search-bar-segment#search-where {
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    padding-left: calc(var(--space-md) + var(--space-xs)); /* Special padding for first segment */
+}
+
+/* The last actual input segment before the button might need specific styling if it's not the button itself that rounds the bar */
+/* If search-bar-button is outside, then the last segment before it needs rounding.
+   If button is inside, then it handles its own rounding or the parent's.
+   My current HTML has button inside the .unified-search-bar.
+*/
+

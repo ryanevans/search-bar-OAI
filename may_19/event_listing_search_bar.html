@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Domino · Event Listing</title>
+
+  <!-- Fonts / base stylesheet -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    /* Ensure the main container arranges its children (My Feeds pill, Filter Actions) when My Feeds is active */
+    /* Ensure the main container has enough width and proper spacing */
+    .unified-search-bar-container {
+      display: flex;
+      align-items: center; /* Vertically align My Feeds pill and Filter Actions */
+      gap: 12px; /* Space between children, e.g., MyFeedsPill and FilterActions */
+      /* Override the max-width from style.css to make search bar wider */
+      max-width: 1020px !important; /* Default max-width increased from 960px */
+    }
+    
+    /* When 'My Feeds' filter is active, make it even wider */
+    .unified-search-bar-container:has(.unified-search-bar.my-feeds-filter-active) {
+      max-width: 1140px !important; /* Increased from 1080px */
+    }
+    
+    /* Ensure the search bar itself expands properly */
+    .unified-search-bar {
+      flex-grow: 1;
+      flex-basis: 0;
+      min-width: 0; /* Prevent overflow */
+    }
+
+    /* Ensure pill container aligns perfectly with the unified search bar */
+    .my-feed-pill-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0 !important; /* Override any margin from style.css */
+    }
+    
+    /* 1. More left padding for "My feeds" dropdown */
+    .my-feed-pill {
+      /* Match padding with the search bar segment */
+      padding: 10px 20px !important; /* vertical 10px | horizontal 20px */
+      display: flex;
+      align-items: center;
+      /* Match the exact height of the search bar */
+      min-height: 44px;
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    /* 2. Height and vertical alignment handled by .unified-search-bar-container's align-items: center 
+       and .my-feed-pill's own flex properties. Specific height for .my-feed-pill can be added if needed. */
+
+    /* 3. Reduce space between "Save as default", "Restore", and icon */
+    #filter-actions { /* This is the filter-actions-container */
+      display: flex !important; /* Script might set this, but ensure it for CSS specificity */
+      align-items: center !important; /* Ensure vertical alignment of buttons and icon */
+      gap: 4px; /* Further reduced space between items */
+    }
+
+    /* Optional: Standardize height/appearance of buttons and icon within filter-actions */
+    #filter-actions .btn,
+    #filter-actions .filter-menu-icon-container {
+      /* Adjust height/padding if needed to align well with .my-feed-pill */
+      /* e.g., height: 38px; */
+      display: flex;
+      align-items: center;
+    }
+    #filter-actions .btn-filter-action {
+        padding-top: 0.25rem; /* Adjust padding for desired button height */
+        padding-bottom: 0.25rem;
+    }
+    /* #filter-actions .filter-menu-icon-container img { */
+      /* vertical-align: middle; /* Good for inline content, but parent is flex */
+    /* } */
+  </style>
+</head>
+
+<body class="page-event-listing">
+  <!-- -------- Header (unchanged) -------- -->
+  <header class="header">
+    <div class="header-logo">
+      <img src="img/logo_black.png" alt="Domino Logo">
+    </div>
+    <div class="header-nav-links desktop-only">
+      <button type="button" id="explore-btn" class="nav-btn active">Explore<span class="nav-underline"></span></button>
+      <button type="button" id="my-feeds-btn" class="nav-btn">My Feeds<span class="nav-underline"></span></button>
+      <button type="button" id="my-dominos-btn" class="nav-btn">My Dominos<span class="nav-underline"></span></button>
+    </div>
+    <div class="header-user-menu"><img src="https://placehold.co/30x30/png?text=U" alt="User Menu"></div>
+  </header>
+
+  <!-- -------- Filter bar (unchanged markup) -------- -->
+  <div class="wrapper">
+    <div class="unified-search-bar-container">
+      <!-- Container for search and bookmark elements that will be flex-aligned -->
+      <div class="mobile-search-elements-container">
+        <button type="button" class="unified-search-start-btn-mobile" id="unified-search-start-btn-mobile">
+        <div class="search-btn-default-content" id="unified-search-start-btn-mobile-default-content">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px" class="search-icon-default">
+            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+          <span class="search-text-default">Start your search</span>
+        </div>
+        <div class="search-btn-applied-filters" id="search-btn-applied-filters-display" style="display: none; text-align: center; width: 100%;">
+          <div class="filter-display-line-1" style="font-weight: bold;">
+            <span id="applied-filter-location"></span><span class="filter-separator" id="separator-location-activity" style="display: none;"> · </span><span id="applied-filter-activity"></span>
+          </div>
+          <div class="filter-display-line-2">
+            <span id="applied-filter-when"></span><span class="filter-separator" id="separator-when-group" style="display: none;"> · </span><span id="applied-filter-group-size"></span>
+          </div>
+        </div>
+      </button>
+
+      <div id="mobile-filter-icon-container" style="display: none; /* JS will control visibility */ margin-right: 8px; /* Add some space to the dropdown next to it */">
+        <img src="img/sliders.svg" alt="Filter feeds" style="display: block; width: 20px; height: 20px;" />
+      </div>
+      <!-- Mobile My Feeds Selector (initially hidden) -->
+      <div id="mobile-my-feeds-selector" class="mobile-my-feeds-selector">
+        <span id="selected-feed-name-mobile" style="font-weight: bold; color: var(--color-text-primary);">All feeds</span>
+        <img src="img/chevron-down.svg" alt="Select feed" class="dropdown-carat">
+      </div>
+      <button type="button" class="mobile-bookmark-button" id="mobile-view-feed-button" style="display: none; margin-left: 8px;">
+        <div class="bookmark-button-inner" style="padding: 9px;"> <!-- Added padding to make icon appear smaller -->
+          <img src="img/arrow_up_right_white.svg" alt="View feed" class="bookmark-icon-img" style="width: 12px; height: 12px;">
+        </div>
+      </button>
+
+      <!-- Mobile Feeds Dropdown (initially hidden) -->
+      <div id="mobile-feeds-dropdown" class="mobile-feeds-dropdown">
+        <button type="button" class="mobile-feed-option" data-value="All feeds">All feeds</button>
+        <button type="button" class="mobile-feed-option" data-value="Brunch Buddies">Brunch Buddies</button>
+        <button type="button" class="mobile-feed-option" data-value="Comedy homies">Comedy homies</button>
+        <button type="button" class="mobile-feed-option" data-value="Cubs day games">Cubs day games</button>
+      </div>
+      
+      <!-- Bookmark button that appears when filters are applied -->
+      <button type="button" class="mobile-bookmark-button" id="mobile-bookmark-button" data-modal-target="saveFeedModalOverlay" style="display: none;">
+        <div class="bookmark-button-inner">
+          <img src="img/bookmark_white.svg" alt="Save Filter" class="bookmark-icon-img">
+        </div>
+      </button>
+    </div> <!-- Close mobile-search-elements-container -->
+
+      <!-- Separate My feed pill (initially hidden) -->
+      <div class="my-feed-pill-container" id="my-feed-pill-container" style="display: none;">
+        <div class="my-feed-pill clickable" id="my-feed-pill">
+          <div class="pill-content">
+            <div class="pill-text-stack">
+              <span class="pill-label">My feed</span>
+              <div class="pill-value-line">
+                <span class="pill-value" id="my-feed-value">All feeds</span>
+                <img src="img/chevron-down.svg" alt="Select feed" class="pill-icon">
+              </div>
+            </div>
+          </div>
+          <div class="my-feeds-dropdown" id="my-feeds-dropdown-menu" style="display: none;">
+            <button type="button" class="feed-option" data-value="All feeds">
+              <span class="feed-main-text">All feeds</span>
+            </button>
+            <button type="button" class="feed-option" data-value="Brunch Buddies">
+              <span class="feed-main-text">Brunch Buddies</span>
+            </button>
+            <button type="button" class="feed-option" data-value="Comedy homies">
+              <span class="feed-main-text">Comedy homies</span>
+            </button>
+            <button type="button" class="feed-option" data-value="Cubs day games">
+              <span class="feed-main-text">Cubs day games</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="unified-search-bar">
+        <div class="search-bar-segment clickable" id="search-where">
+          <label for="search-input-where" class="segment-label">Where</label>
+          <input type="text" id="search-input-where" class="segment-input" placeholder="City or neighborhood" readonly>
+          <div class="where-dropdown" id="where-dropdown-menu" style="display: none;">
+            <button type="button" class="location-option" data-value="Chicago Loop, Chicago, IL">
+              <span class="location-main-text">Chicago Loop, Chicago, IL</span>
+              <span class="location-sub-text">Neighborhood</span>
+            </button>
+            <button type="button" class="location-option" data-value="Chicago, IL">
+              <span class="location-main-text">Chicago, IL</span>
+              <span class="location-sub-text">City</span>
+            </button>
+            <button type="button" class="location-option" data-value="Chinatown, Chicago, IL">
+              <span class="location-main-text">Chinatown, Chicago, IL</span>
+              <span class="location-sub-text">Neighborhood</span>
+            </button>
+            <button type="button" class="location-option" data-value="Chinatown, New York, NY">
+              <span class="location-main-text">Chinatown, New York, NY</span>
+              <span class="location-sub-text">Neighborhood</span>
+            </button>
+            <button type="button" class="location-option" data-value="Heart of Chicago, Chicago IL">
+              <span class="location-main-text">Heart of Chicago, Chicago IL</span>
+              <span class="location-sub-text">Neighborhood</span>
+            </button>
+            <!-- Add more hardcoded options as needed -->
+          </div>
+        </div>
+        <div class="search-bar-divider"></div>
+        <div class="search-bar-segment clickable" id="search-when">
+          <label for="search-input-when" class="segment-label">When</label>
+          <input type="text" id="search-input-when" class="segment-input" placeholder="Preferred days" readonly>
+          <div class="when-dropdown" id="when-dropdown-menu" style="display: none;">
+            <div class="date-option-item">
+              <input type="checkbox" id="date-today" name="when_date" value="today" class="date-option-checkbox">
+              <label for="date-today" class="date-option-label">Today <span class="date-subtext" data-date-marker="today"></span></label>
+            </div>
+            <div class="date-option-item">
+              <input type="checkbox" id="date-tomorrow" name="when_date" value="tomorrow" class="date-option-checkbox">
+              <label for="date-tomorrow" class="date-option-label">Tomorrow <span class="date-subtext" data-date-marker="tomorrow"></span></label>
+            </div>
+            <div class="date-option-item">
+              <input type="checkbox" id="date-this-week" name="when_date" value="this_week" class="date-option-checkbox">
+              <label for="date-this-week" class="date-option-label">This week <span class="date-subtext" data-date-marker="this_week"></span></label>
+            </div>
+            <div class="date-option-item">
+              <input type="checkbox" id="date-this-weekend" name="when_date" value="this_weekend" class="date-option-checkbox">
+              <label for="date-this-weekend" class="date-option-label">This weekend <span class="date-subtext" data-date-marker="this_weekend"></span></label>
+            </div>
+            <div class="date-option-item">
+              <input type="checkbox" id="date-next-week" name="when_date" value="next_week" class="date-option-checkbox">
+              <label for="date-next-week" class="date-option-label">Next week <span class="date-subtext" data-date-marker="next_week"></span></label>
+            </div>
+            <div class="date-option-item">
+              <input type="checkbox" id="date-next-weekend" name="when_date" value="next_weekend" class="date-option-checkbox">
+              <label for="date-next-weekend" class="date-option-label">Next weekend <span class="date-subtext" data-date-marker="next_weekend"></span></label>
+            </div>
+            <div class="date-option-item">
+              <input type="checkbox" id="date-next-few-weeks" name="when_date" value="next_few_weeks" class="date-option-checkbox">
+              <label for="date-next-few-weeks" class="date-option-label">Next few weeks <span class="date-subtext" data-date-marker="next_few_weeks"></span></label>
+            </div>
+            <div class="date-option-item">
+              <input type="checkbox" id="date-next-few-weekends" name="when_date" value="next_few_weekends" class="date-option-checkbox">
+              <label for="date-next-few-weekends" class="date-option-label">Next few weekends <span class="date-subtext" data-date-marker="next_few_weekends"></span></label>
+            </div>
+          </div>
+        </div>
+        <div class="search-bar-divider"></div>
+        <div class="search-bar-segment clickable" id="search-activity">
+          <label for="search-input-activity" class="segment-label">What activity</label>
+          <input type="text" id="search-input-activity" class="segment-input" placeholder="Add activity" readonly>
+          <div class="activity-dropdown" id="activity-dropdown-menu" style="display: none;">
+            <div class="activity-option-item">
+              <input type="checkbox" id="activity-breakfast" name="activity" value="Breakfast" class="activity-option-checkbox">
+              <label for="activity-breakfast" class="activity-option-label">Breakfast</label>
+            </div>
+            <div class="activity-option-item">
+              <input type="checkbox" id="activity-lunch" name="activity" value="Lunch" class="activity-option-checkbox">
+              <label for="activity-lunch" class="activity-option-label">Lunch</label>
+            </div>
+            <div class="activity-option-item">
+              <input type="checkbox" id="activity-drinks" name="activity" value="Drinks" class="activity-option-checkbox">
+              <label for="activity-drinks" class="activity-option-label">Drinks</label>
+            </div>
+            <div class="activity-option-item">
+              <input type="checkbox" id="activity-coffee" name="activity" value="Coffee" class="activity-option-checkbox">
+              <label for="activity-coffee" class="activity-option-label">Coffee</label>
+            </div>
+            <div class="activity-option-item">
+              <input type="checkbox" id="activity-sporting-events" name="activity" value="Sporting events" class="activity-option-checkbox">
+              <label for="activity-sporting-events" class="activity-option-label">Sporting events</label>
+            </div>
+            <div class="activity-option-item">
+              <input type="checkbox" id="activity-concerts" name="activity" value="Concerts" class="activity-option-checkbox">
+              <label for="activity-concerts" class="activity-option-label">Concerts</label>
+            </div>
+            <div class="activity-option-item">
+              <input type="checkbox" id="activity-stand-up-comedy" name="activity" value="Stand-up comedy" class="activity-option-checkbox">
+              <label for="activity-stand-up-comedy" class="activity-option-label">Stand-up comedy</label>
+            </div>
+          </div>
+        </div>
+        <div class="search-bar-divider"></div>
+        <div class="search-bar-segment" id="search-who">
+          <label for="search-input-who" class="segment-label">Who</label>
+          <input type="text" id="search-input-who" class="segment-input" placeholder="Add guests" readonly>
+          <div class="group-size-popover" id="group-size-popover" style="display: none;">
+            <div class="popover-title">Group size</div>
+            <div class="popover-controls">
+              <button type="button" class="btn-stepper" id="group-size-minus" aria-label="Decrease group size">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px"><path d="M19 13H5v-2h14v2z"/></svg>
+              </button>
+              <span class="popover-value" id="group-size-value">2</span>
+              <button type="button" class="btn-stepper" id="group-size-plus" aria-label="Increase group size">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <button class="search-bar-button" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px" style="display: block;">
+            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+        </button>
+      </div>
+      <button type="button" class="btn unified-save-feed-btn" id="unified-save-feed-btn" data-modal-target="saveFeedModalOverlay" style="display: none;">
+        Save Feed
+        <img src="img/bookmark_white.svg" alt="Save Feed" style="margin-left: 8px; width: 18px; height: 18px; vertical-align: middle;">
+      </button>
+      
+      <!-- Filter action buttons (initially hidden) -->
+      <div class="filter-action-buttons" id="filter-action-buttons" style="display: none;">
+        <button type="button" class="btn btn-ghost" id="save-as-default-btn">Save as default</button>
+        <button type="button" class="btn btn-ghost" id="restore-btn">Restore</button>
+        <button type="button" class="btn-icon" id="filter-menu-btn">
+          <img src="img/three_dots_vertical.svg" alt="Menu" style="width: 18px; height: 18px;">
+        </button>
+      </div>
+    </div>
+  <!-- Custom Filter Applied Message (for My Feeds) -->
+  <div id="mobile-custom-filter-notice" style="display: none; text-align: center; padding: 8px 0; font-size: 0.85rem; width: 100%;">
+    <span>Custom filter applied</span>
+    <a href="#" id="mobile-restore-feed-defaults" style="margin-left: 8px; color: var(--color-primary); text-decoration: underline;">Restore default</a>
+  </div>
+  </div>
+
+  <!-- -------- Main event listing (first card   already shows markup w/ heart) -------- -->
+    <main class="wrapper">
+      <!-- Breakfast Section -->
+      <section class="event-section">
+        <div class="section-header">
+          <h2>Breakfast in Lakeview</h2>
+          <div class="view-all-controls">
+            <a href="#">View all</a>
+            <button class="arrow-btn"><img src="img/chevron-left.svg" alt="Previous"></button>
+            <button class="arrow-btn"><img src="img/chevron-right.svg" alt="Next"></button>
+          </div>
+        </div>
+        <div class="event-cards-container">
+          <!-- Card 1 -->
+          <div class="event-card">
+            <!-- put this immediately after the opening <div class="event-card"> … -->
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+  
+            <img src="img/venues/cafe_paris.jpg" alt="Maison Parisienne" class="event-image">
+            <div class="card-content">
+              <h3>Breakfast at Maison Parisienne - French Café</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Maison Parisienne - French Café</span>
+                      <span class="venue-address">3307 N Clark St, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Friday, Jul 19 · 8:00 AM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/los 3 panchos.jpg" alt="Los 3 Panchos" class="event-image">
+            <div class="card-content">
+              <h3>Breakfast at Los 3 Panchos</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Los 3 Panchos</span>
+                      <span class="venue-address">1155 W Diversey Pkwy, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Saturday, Jul 20 · 9:00 AM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/little goat.jpeg" alt="Little Goat Diner" class="event-image">
+            <div class="card-content">
+              <h3>Breakfast at Little Goat Diner</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Little Goat Diner</span>
+                      <span class="venue-address">3325 N Southport Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Sunday, Jul 21 · 10:00 AM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Dinner Section -->
+      <section class="event-section">
+        <div class="section-header">
+          <h2>Dinner in Lakeview</h2>
+          <div class="view-all-controls">
+            <a href="#">View all</a>
+            <button class="arrow-btn"><img src="img/chevron-left.svg" alt="Previous"></button>
+            <button class="arrow-btn"><img src="img/chevron-right.svg" alt="Next"></button>
+          </div>
+        </div>
+        <div class="event-cards-container">
+          <!-- Card 1 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/kims sushi.jpeg" alt="Kim's Korean Cuisine" class="event-image">
+            <div class="card-content">
+              <h3>Dinner at Kim's Korean Cuisine & Sushi</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Kim's Korean Cuisine & Sushi</span>
+                      <span class="venue-address">3422 N Lincoln Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Monday, Jul 22 · 6:00 PM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/Dona Torta.jpeg" alt="Doña Tota" class="event-image">
+            <div class="card-content">
+              <h3>Dinner at Doña Tota</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Doña Tota</span>
+                      <span class="venue-address">3751 N Southport Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Tuesday, Jul 23 · 7:00 PM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/Szechuan Corner.jpeg" alt="Szechuan Corner" class="event-image">
+            <div class="card-content">
+              <h3>Dinner at Szechuan Corner</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Szechuan Corner</span>
+                      <span class="venue-address">2913 N Ashland Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Wednesday, Jul 24 · 8:00 PM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Lunch Section -->
+      <section class="event-section">
+        <div class="section-header">
+          <h2>Lunch in Logan Square</h2>
+          <div class="view-all-controls">
+            <a href="#">View all</a>
+            <button class="arrow-btn"><img src="img/chevron-left.svg" alt="Previous"></button>
+            <button class="arrow-btn"><img src="img/chevron-right.svg" alt="Next"></button>
+          </div>
+        </div>
+        <div class="event-cards-container">
+          <!-- Card 1 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/wonder chop.jpeg" alt="Wonder Chop" class="event-image">
+            <div class="card-content">
+              <h3>Lunch at Wonder Chop</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Wonder Chop</span>
+                      <span class="venue-address">2419 W Fullerton Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Thursday, Jul 25 · 12:00 PM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/Caribella.jpeg" alt="Caribella" class="event-image">
+            <div class="card-content">
+              <h3>Tropical Lunch Experience at Caribella</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">CARIBELLA</span>
+                      <span class="venue-address">3311 W Fullerton Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Friday, Jul 26 · 1:00 PM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/cozy corner.jpeg" alt="Cozy Corner" class="event-image">
+            <div class="card-content">
+              <h3>Lunch at Cozy Corner Restaurant and Pancake House</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Cozy Corner Restaurant and Pancake House</span>
+                      <span class="venue-address">2294 N Milwaukee Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Saturday, Jul 27 · 11:30 AM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <div class="see-more-container">
+          <button class="btn btn-secondary see-more-btn">See More</button>
+      </div>
+  </main>
+
+  <footer class="footer">
+    Terms of Use • Privacy policy • Contact Us<br>&copy; Timber Ridge Capital, LLC 2022
+  </footer>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav">
+    <div class="mobile-nav-item active">
+      <img src="img/magnifying_glass.svg" alt="Explore" class="nav-icon">
+      <span>Explore</span>
+    </div>
+    <div class="mobile-nav-item">
+      <img src="img/feed.svg" alt="My Feeds" class="nav-icon">
+      <span>My Feeds</span>
+    </div>
+    <div class="mobile-nav-item">
+      <img src="img/my_dominos.svg" alt="My Dominos" class="nav-icon">
+      <span>My Dominos</span>
+    </div>
+  </nav>
+
+<!-- Save Feed Modal HTML -->
+<div id="saveFeedModalOverlay" class="modal-overlay">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="saveFeedModalTitle" style="padding-left: 0; padding-right: 0;">
+        <div class="modal-header" style="display: flex; align-items: center; padding: 1rem; border-bottom: 1px solid #dee2e6;">
+            <button type="button" class="btn btn-close-modal" id="modalCloseBtn" aria-label="Close save feed modal" data-modal-dismiss="true" style="position: static; order: -1; float: none; margin-left: 0; margin-right: 1rem; right: auto;">&times;</button>
+            <h2 class="modal-title" id="saveFeedModalTitle" style="flex-grow: 1; text-align: center; margin: 0; font-size: 1.25rem;">Save feed</h2> 
+        </div>
+        <div class="modal-body" style="padding: 1rem;">
+            <div class="form-group" style="position: relative; margin-bottom: 0.5rem;">
+                <label for="feedNameInput" id="feedNameLabel" style="position: absolute; left: 16px; top: 14px; font-size: 1rem; color: #6c757d; pointer-events: none; transition: all 0.15s ease-out; background-color: transparent; padding: 0;">Name</label>
+                <input type="text" id="feedNameInput" name="feedName" required style="border: 1px solid #ced4da; padding: 22px 15px 8px 15px; font-size: 1rem; width: 100%; box-sizing: border-box; border-radius: 4px; outline: none;">
+                <small id="feedNameCharCount" style="margin-top: 4px; display: inline-block;">0/50 characters</small>
+            </div>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-top: 1px solid #dee2e6;">
+            <button id="modalClearBtn" class="btn reset-appearance btn-link" style="font-weight: bold; text-decoration: none;">Clear</button> 
+            <button id="saveFeedConfirmBtn" disabled style="background-color: #e9ecef; color: #adb5bd; border: 1px solid #ced4da; padding: 12px 24px; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: not-allowed; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;">Save and view feed</button> 
+        </div>
+    </div>
+</div>
+<!-- Share Feed Modal HTML (styled same as Save Feed Modal) -->
+<div id="shareFeedModalOverlay" class="modal-overlay">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="shareFeedModalTitle">
+        <div class="modal-header">
+            <h2 class="modal-title" id="shareFeedModalTitle">Share Feed</h2> 
+            <button type="button" class="btn btn-close-modal" id="shareFeedModalCloseXBtn" aria-label="Close share feed modal" data-modal-dismiss="true">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <label for="shareFeedLink" class="floating-label">Link</label>
+                    <input type="text" id="shareFeedLink" value="" readonly> 
+                    <button id="copyLinkBtn" class="copy-btn icon-btn" aria-label="Copy link"><img src="img/copy.svg" alt="Copy" class="icon-svg"></button>
+                </div>
+            </div>
+            <!-- Collapsible Personal Message Section -->
+            <div class="collapsible-section">
+                <div class="collapsible-header">
+                    <button type="button" id="togglePersonalMessage" class="collapsible-toggle" aria-expanded="false">
+                        Add a personal message <img src="img/chevron-right.svg" alt="Toggle message" class="icon-svg personal-message-chevron" id="personalMessageChevron">
+                    </button>
+                    <button id="copyMessageBtn" class="copy-btn icon-btn" aria-label="Copy message"><img src="img/copy.svg" alt="Copy" class="icon-svg"></button>
+                </div>
+                <div id="personalMessageContent" class="collapsible-content" style="display: none;">
+                    <div class="form-group" style="margin-top: 10px;">
+                        <textarea id="personalMessageTextarea" rows="3">Hey! I made “{feedName}” feed on Domino - it comes up with hangout ideas and pings us when someone's interested. Take a look: {URL}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Share with Friends (Placeholder) -->
+            <div class="share-options">
+                <p><strong>Or, share with friends on Domino:</strong></p>
+                <!-- Placeholder for friend list/selector -->
+                <div class="friend-selector-placeholder">
+                    [Friend selector/search will go here]
+                    <button class="btn btn-primary" id="sendInvitesBtn" style="margin-top: 10px; width: 100%;">Send Invites</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="shareFeedModalCloseFooterBtn" data-modal-dismiss="true">Done</button> 
+        </div>
+    </div>
+</div>
+
+  <script src="main.js" defer></script>
+
+<!-- Mobile Filter Overlay -->
+<div id="mobile-filter-overlay" class="mobile-filter-overlay-container" style="display: none;">
+  <div class="mobile-filter-content">
+    <div class="mobile-filter-header">
+      <h2>Apply filters</h2>
+      <button type="button" class="btn-close-mobile-filter" id="close-mobile-filter-btn" aria-label="Close filters">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28px" height="28px">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+        </svg>
+      </button>
+    </div>
+    <div id="mobile-filter-feed-info-container" style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 12px; padding: 0 2px; display: none;">
+      <span id="mobile-filter-active-feed-name-text" style="font-size: 1.1rem; font-weight: 600;"></span>
+      <a href="#" id="edit-feed-preferences-link" style="font-size: 0.85rem; color: var(--color-primary); text-decoration: none; white-space: nowrap; margin-left: 10px; display: inline-flex; align-items: center;">
+Edit Preferences
+      </a>
+    </div>
+    <div class="mobile-filter-options">
+      <div class="filter-row" id="mobile-filter-location" aria-expanded="false" aria-controls="location-accordion-panel">
+        <div class="filter-row-header">
+          <span>Where</span>
+          <span class="filter-value" id="mobile-location-value">Any <svg class="accordion-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg></span>
+        </div> <!-- End filter-row-header -->
+        <div class="location-accordion-panel" id="location-accordion-panel">
+          <div class="accordion-content">
+            <div class="location-option-item">
+              <input type="radio" id="location-any" name="mobile_location" value="" class="location-option-radio mobile" checked>
+              <label for="location-any" class="location-option-label">Any Location</label>
+            </div>
+            <div class="location-option-item">
+              <input type="radio" id="location-loop" name="mobile_location" value="Chicago Loop, Chicago, IL" class="location-option-radio mobile">
+              <label for="location-loop" class="location-option-label">Chicago Loop, Chicago, IL</label>
+            </div>
+            <div class="location-option-item">
+              <input type="radio" id="location-river-north" name="mobile_location" value="River North, Chicago, IL" class="location-option-radio mobile">
+              <label for="location-river-north" class="location-option-label">River North, Chicago, IL</label>
+            </div>
+            <div class="location-option-item">
+              <input type="radio" id="location-west-loop" name="mobile_location" value="West Loop, Chicago, IL" class="location-option-radio mobile">
+              <label for="location-west-loop" class="location-option-label">West Loop, Chicago, IL</label>
+            </div>
+            <div class="location-option-item">
+              <input type="radio" id="location-lincoln-park" name="mobile_location" value="Lincoln Park, Chicago, IL" class="location-option-radio mobile">
+              <label for="location-lincoln-park" class="location-option-label">Lincoln Park, Chicago, IL</label>
+            </div>
+            <div class="location-option-item">
+              <input type="radio" id="location-wicker-park" name="mobile_location" value="Wicker Park, Chicago, IL" class="location-option-radio mobile">
+              <label for="location-wicker-park" class="location-option-label">Wicker Park, Chicago, IL</label>
+            </div>
+          </div>
+      </div>
+      </div>
+      <div class="filter-row" id="mobile-filter-timeframe" aria-expanded="false" aria-controls="timeframe-accordion-panel">
+        <div class="filter-row-header">
+          <span>When</span>
+          <span class="filter-value" id="mobile-timeframe-value">Any <svg class="accordion-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg></span>
+        </div>
+        <div class="timeframe-accordion-panel" id="timeframe-accordion-panel" style="display: none;">
+          <div class="mobile-filter-options-grid">
+            <div class="date-option-item mobile">
+              <input type="checkbox" id="mobile-date-today" name="mobile_when_date" value="today" class="date-option-checkbox mobile">
+              <label for="mobile-date-today" class="date-option-label mobile">Today <span class="date-subtext" data-date-marker="today"></span></label>
+            </div>
+            <div class="date-option-item mobile">
+              <input type="checkbox" id="mobile-date-tomorrow" name="mobile_when_date" value="tomorrow" class="date-option-checkbox mobile">
+              <label for="mobile-date-tomorrow" class="date-option-label mobile">Tomorrow <span class="date-subtext" data-date-marker="tomorrow"></span></label>
+            </div>
+            <div class="date-option-item mobile">
+              <input type="checkbox" id="mobile-date-this-week" name="mobile_when_date" value="this_week" class="date-option-checkbox mobile">
+              <label for="mobile-date-this-week" class="date-option-label mobile">This week <span class="date-subtext" data-date-marker="this_week"></span></label>
+            </div>
+            <div class="date-option-item mobile">
+              <input type="checkbox" id="mobile-date-this-weekend" name="mobile_when_date" value="this_weekend" class="date-option-checkbox mobile">
+              <label for="mobile-date-this-weekend" class="date-option-label mobile">This weekend <span class="date-subtext" data-date-marker="this_weekend"></span></label>
+            </div>
+            <div class="date-option-item mobile">
+              <input type="checkbox" id="mobile-date-next-week" name="mobile_when_date" value="next_week" class="date-option-checkbox mobile">
+              <label for="mobile-date-next-week" class="date-option-label mobile">Next week <span class="date-subtext" data-date-marker="next_week"></span></label>
+            </div>
+            <div class="date-option-item mobile">
+              <input type="checkbox" id="mobile-date-next-weekend" name="mobile_when_date" value="next_weekend" class="date-option-checkbox mobile">
+              <label for="mobile-date-next-weekend" class="date-option-label mobile">Next weekend <span class="date-subtext" data-date-marker="next_weekend"></span></label>
+            </div>
+            <div class="date-option-item mobile">
+              <input type="checkbox" id="mobile-date-next-few-weeks" name="mobile_when_date" value="next_few_weeks" class="date-option-checkbox mobile">
+              <label for="mobile-date-next-few-weeks" class="date-option-label mobile">Next few weeks <span class="date-subtext" data-date-marker="next_few_weeks"></span></label>
+            </div>
+            <div class="date-option-item mobile">
+              <input type="checkbox" id="mobile-date-next-few-weekends" name="mobile_when_date" value="next_few_weekends" class="date-option-checkbox mobile">
+              <label for="mobile-date-next-few-weekends" class="date-option-label mobile">Next few weekends <span class="date-subtext" data-date-marker="next_few_weekends"></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-row" id="mobile-filter-activity" aria-expanded="false" aria-controls="activity-accordion-panel">
+        <div class="filter-row-header">
+          <span>What activity</span>
+          <span class="filter-value" id="mobile-activity-value">Any <svg class="accordion-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg></span>
+        </div>
+        <div class="activity-accordion-panel" id="activity-accordion-panel" style="display: none;">
+          <div class="mobile-filter-options-grid">
+            <div class="activity-option-item mobile">
+              <input type="checkbox" id="mobile-activity-breakfast" name="mobile_activity" value="Breakfast" class="activity-option-checkbox mobile">
+              <label for="mobile-activity-breakfast" class="activity-option-label mobile">Breakfast</label>
+            </div>
+            <div class="activity-option-item mobile">
+              <input type="checkbox" id="mobile-activity-lunch" name="mobile_activity" value="Lunch" class="activity-option-checkbox mobile">
+              <label for="mobile-activity-lunch" class="activity-option-label mobile">Lunch</label>
+            </div>
+            <div class="activity-option-item mobile">
+              <input type="checkbox" id="mobile-activity-drinks" name="mobile_activity" value="Drinks" class="activity-option-checkbox mobile">
+              <label for="mobile-activity-drinks" class="activity-option-label mobile">Drinks</label>
+            </div>
+            <div class="activity-option-item mobile">
+              <input type="checkbox" id="mobile-activity-coffee" name="mobile_activity" value="Coffee" class="activity-option-checkbox mobile">
+              <label for="mobile-activity-coffee" class="activity-option-label mobile">Coffee</label>
+            </div>
+            <div class="activity-option-item mobile">
+              <input type="checkbox" id="mobile-activity-sporting-events" name="mobile_activity" value="Sporting events" class="activity-option-checkbox mobile">
+              <label for="mobile-activity-sporting-events" class="activity-option-label mobile">Sporting events</label>
+            </div>
+            <div class="activity-option-item mobile">
+              <input type="checkbox" id="mobile-activity-concerts" name="mobile_activity" value="Concerts" class="activity-option-checkbox mobile">
+              <label for="mobile-activity-concerts" class="activity-option-label mobile">Concerts</label>
+            </div>
+            <div class="activity-option-item mobile">
+              <input type="checkbox" id="mobile-activity-stand-up-comedy" name="mobile_activity" value="Stand-up comedy" class="activity-option-checkbox mobile">
+              <label for="mobile-activity-stand-up-comedy" class="activity-option-label mobile">Stand-up comedy</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-row" id="mobile-filter-group-size">
+        <div class="filter-row-header">
+          <span>Group Size</span>
+          <span class="filter-value">Any <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg></span>
+        </div>
+      </div>
+    </div>
+    <div class="mobile-filter-actions">
+      <button type="button" class="btn btn-secondary" id="mobile-filter-reset-btn">Reset</button>
+      <button type="button" class="btn btn-primary" id="mobile-filter-apply-btn">Apply & View</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const feedNameInput = document.getElementById('feedNameInput');
+    const feedNameLabel = document.getElementById('feedNameLabel');
+    const saveFeedButton = document.getElementById('saveFeedConfirmBtn');
+    const charCountElement = document.getElementById('feedNameCharCount');
+    const modalClearButton = document.getElementById('modalClearBtn');
+
+    if (!feedNameInput || !feedNameLabel || !saveFeedButton || !charCountElement || !modalClearButton) {
+        console.error('Cascade AI script: Modal interactive elements not found.');
+        return;
+    }
+
+    const maxChars = 50;
+
+    const activeButtonCssText = "background-color: #000000; color: #ffffff; border: 1px solid #000000; padding: 12px 24px; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;";
+    const disabledButtonCssText = "background-color: #e9ecef; color: #adb5bd; border: 1px solid #ced4da; padding: 12px 24px; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: not-allowed; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;";
+    
+    let originalClearButtonColor = window.getComputedStyle(modalClearButton).color;
+
+    const labelPlaceholderStyle = { top: '14px', fontSize: '1rem', color: '#6c757d', backgroundColor: 'transparent', padding: '0' };
+    const labelFloatedStyle = { top: '6px', fontSize: '0.75rem', color: '#000000', backgroundColor: '#ffffff', padding: '0 5px' };
+
+    function applyStyle(element, styleObject) {
+        for (const property in styleObject) {
+            element.style[property] = styleObject[property];
+        }
+    }
+
+    function updateInputAndLabelState() {
+        const hasValue = feedNameInput.value.length > 0;
+        const isFocused = document.activeElement === feedNameInput;
+
+        charCountElement.textContent = `${feedNameInput.value.length}/${maxChars} characters`;
+
+        if (hasValue) {
+            saveFeedButton.disabled = false;
+            saveFeedButton.style.cssText = activeButtonCssText;
+        } else {
+            saveFeedButton.disabled = true;
+            saveFeedButton.style.cssText = disabledButtonCssText;
+        }
+
+        if (hasValue || isFocused) {
+            applyStyle(feedNameLabel, labelFloatedStyle);
+        } else {
+            applyStyle(feedNameLabel, labelPlaceholderStyle);
+        }
+        
+        if (!isFocused) {
+            feedNameInput.style.borderColor = '#ced4da'; // Default border if not focused
+        } else {
+            feedNameInput.style.borderColor = '#000000'; // Black border if focused
+        }
+    }
+
+    feedNameInput.addEventListener('input', updateInputAndLabelState);
+
+    feedNameInput.addEventListener('focus', function() {
+        feedNameInput.style.borderColor = '#000000';
+        applyStyle(feedNameLabel, labelFloatedStyle);
+    });
+
+    feedNameInput.addEventListener('blur', function() {
+        // Border color is handled by updateInputAndLabelState based on focus
+        updateInputAndLabelState(); 
+    });
+
+    modalClearButton.addEventListener('mouseover', function() {
+        modalClearButton.style.color = '#000000';
+    });
+    modalClearButton.addEventListener('mouseout', function() {
+        modalClearButton.style.color = originalClearButtonColor;
+    });
+    
+    updateInputAndLabelState();
+});
+</script>
+
+<!-- Custom styles for navigation underline -->
+<style>
+  .nav-btn {
+    position: relative;
+    font-weight: normal;
+    color: var(--color-text-secondary);
+  }
+  
+  .nav-btn.active {
+    font-weight: bold;
+    color: var(--color-black);
+  }
+  
+  .nav-underline {
+    display: none;
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: black;
+    border-radius: 1.5px;
+  }
+  
+  .nav-btn.active .nav-underline {
+    display: block;
+  }
+  
+  /* Override the default explore button underline */
+  #explore-btn::after {
+    display: none !important;
+  }
+</style>
+
+<!-- Navigation underline and My Feeds filter functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const navButtons = document.querySelectorAll('.nav-btn');
+  const exploreBtn = document.getElementById('explore-btn');
+  const myFeedsBtn = document.getElementById('my-feeds-btn');
+  // const myDominosBtn = document.getElementById('my-dominos-btn'); // Uncomment if needed
+
+  const unifiedSearchBar = document.querySelector('.unified-search-bar');
+  const saveFeedBtn = document.getElementById('unified-save-feed-btn');
+  const saveFeedBtnImg = saveFeedBtn ? saveFeedBtn.querySelector('img') : null;
+  const saveFeedBtnTextNode = saveFeedBtn ? saveFeedBtn.childNodes[0] : null; // Assuming text is the first child
+  
+  // Reference to filter action buttons
+  const filterActionButtons = document.getElementById('filter-action-buttons');
+  const saveAsDefaultBtn = document.getElementById('save-as-default-btn');
+  const restoreBtn = document.getElementById('restore-btn');
+  const filterMenuBtn = document.getElementById('filter-menu-btn');
+
+  // References to the new My feed pill components
+  const myFeedPillContainer = document.getElementById('my-feed-pill-container');
+  const myFeedPill = document.getElementById('my-feed-pill');
+  const myFeedValue = document.getElementById('my-feed-value');
+  const myFeedsDropdownMenu = document.getElementById('my-feeds-dropdown-menu');
+  const feedOptions = myFeedsDropdownMenu ? myFeedsDropdownMenu.querySelectorAll('.feed-option') : [];
+
+  // Filter input references
+  const whereInput = document.getElementById('search-input-where');
+  const whenInput = document.getElementById('search-input-when');
+  const activityInput = document.getElementById('search-input-activity');
+  const whoInput = document.getElementById('search-input-who');
+  
+  // Track if any filters are selected
+  let filtersActive = false;
+
+  // References to other dropdowns to manage them collectively
+  const whereDropdown = document.getElementById('where-dropdown-menu');
+  const whenDropdown = document.getElementById('when-dropdown-menu');
+  const activityDropdown = document.getElementById('activity-dropdown-menu');
+  const groupSizePopover = document.getElementById('group-size-popover');
+
+  function closeAllDropdowns(exceptDropdown) {
+    const dropdowns = [
+      whereDropdown,
+      whenDropdown,
+      activityDropdown,
+      groupSizePopover,
+      myFeedsDropdownMenu
+    ];
+    dropdowns.forEach(dropdown => {
+      if (dropdown && dropdown !== exceptDropdown && dropdown.style.display !== 'none') {
+        dropdown.style.display = 'none';
+      }
+    });
+  }
+
+  // Track filter selections directly
+  let whenFilterSelected = false;
+  let whoFilterSelected = false;
+
+  // Check if any filters have values
+  function checkFiltersActive() {
+    // Log the values for debugging
+    console.log('Filter values:', {
+      'where': whereInput?.value,
+      'when': whenInput?.value,
+      'activity': activityInput?.value,
+      'who': whoInput?.value,
+      'myFeed': myFeedValue?.textContent,
+      'whenFilterSelected': whenFilterSelected,
+      'whoFilterSelected': whoFilterSelected
+    });
+    
+    // Special handling: also consider 'When' or 'Who' filter selected based on our direct tracking
+    if (whenFilterSelected) {
+      console.log('When filter considered active from direct tracking');
+      return true;
+    }
+    
+    if (whoFilterSelected) {
+      console.log('Who filter considered active from direct tracking');
+      return true;
+    }
+    
+    // If any of the filter inputs have a non-default value, consider filters active
+    return (
+      (whereInput && whereInput.value.trim() !== '') ||
+      (whenInput && whenInput.value.trim() !== '' && whenInput.value.trim() !== 'Preferred days') ||
+      (activityInput && activityInput.value.trim() !== '' && activityInput.value.trim() !== 'Add activity') ||
+      (whoInput && whoInput.value.trim() !== '' && whoInput.value.trim() !== '2') // Assuming '2' is default
+      // Note: We don't check myFeedValue here since it's now part of the pill and always shows something
+    );
+  }
+  
+  // Toggle between Share Feed button and filter action buttons
+  function updateButtonsDisplay() {
+    // Only do this when My Feeds is active
+    const isMyFeedsActive = document.getElementById('my-feeds-btn')?.classList.contains('active');
+    if (!isMyFeedsActive) return;
+    
+    filtersActive = checkFiltersActive();
+    console.log('Filters active:', filtersActive);
+    
+    if (filtersActive) {
+      // If filters are active, show the filter action buttons and hide Share Feed button
+      if (filterActionButtons) {
+        filterActionButtons.style.display = 'flex';
+        console.log('Showing filter action buttons');
+      }
+      if (saveFeedBtn) {
+        saveFeedBtn.style.display = 'none';
+        console.log('Hiding Share Feed button');
+      }
+    } else {
+      // If no filters are active, show the Share Feed button and hide filter action buttons
+      if (filterActionButtons) {
+        filterActionButtons.style.display = 'none';
+        console.log('Hiding filter action buttons');
+      }
+      if (saveFeedBtn) {
+        saveFeedBtn.style.display = 'inline-flex';
+        console.log('Showing Share Feed button');
+      }
+    }
+  }
+
+  function handleNavClick(event) {
+    navButtons.forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    const clickedButtonId = event.currentTarget.id;
+
+    if (clickedButtonId === 'my-feeds-btn') {
+      // Show the My feed pill
+      if (myFeedPillContainer) myFeedPillContainer.style.display = 'block';
+      if (unifiedSearchBar) unifiedSearchBar.classList.add('my-feeds-filter-active');
+      
+      // Configure the Share Feed button
+      if (saveFeedBtn) {
+        if (saveFeedBtnTextNode) saveFeedBtnTextNode.nodeValue = 'Share Feed ';
+        if (saveFeedBtnImg) {
+          saveFeedBtnImg.src = 'img/arrow-up-right.svg';
+          saveFeedBtnImg.alt = 'Share Feed';
+          saveFeedBtnImg.classList.add('share-icon-white');
+        }
+      }
+      
+      // Check filters and show appropriate buttons
+      updateButtonsDisplay();
+    } else {
+      // Hide the My feed pill
+      if (myFeedPillContainer) myFeedPillContainer.style.display = 'none';
+      if (unifiedSearchBar) unifiedSearchBar.classList.remove('my-feeds-filter-active');
+      if (saveFeedBtn) {
+        saveFeedBtn.style.display = 'none';
+        // Revert to 'Save Feed' when not on My Feeds tab, even if hidden
+        if (saveFeedBtnTextNode) saveFeedBtnTextNode.nodeValue = 'Save Feed ';
+        if (saveFeedBtnImg) {
+          saveFeedBtnImg.src = 'img/bookmark_white.svg';
+          saveFeedBtnImg.alt = 'Save Feed';
+          saveFeedBtnImg.classList.remove('share-icon-white');
+        }
+      }
+      
+      // Reset filter flags when navigating away from My Feeds
+      whenFilterSelected = false;
+      whoFilterSelected = false;
+      
+      // Hide filter action buttons when not on My Feeds
+      if (filterActionButtons) filterActionButtons.style.display = 'none';
+      
+      // Close MyFeeds dropdown if it's open and we navigate away from 'My Feeds'
+      if (myFeedsDropdownMenu && myFeedsDropdownMenu.style.display !== 'none') {
+        myFeedsDropdownMenu.style.display = 'none';
+      }
+    }
+    // Close all search bar dropdowns when navigation changes
+    closeAllDropdowns(null);
+  }
+
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', handleNavClick);
+  });
+
+  // Create a special function to force-update the UI after any filter changes
+  // This helps ensure our logic is applied consistently
+  function forceUIUpdate() {
+    setTimeout(function() {
+      updateButtonsDisplay();
+      console.log('Forced UI update');
+    }, 200);
+  }
+  
+  // Add event listeners to the search segments to detect when they're clicked
+  // This helps capture interactions with all filter segments
+  const searchSegments = document.querySelectorAll('.search-bar-segment');
+  searchSegments.forEach(segment => {
+    segment.addEventListener('click', function() {
+      console.log('Search segment clicked:', segment.id);
+      forceUIUpdate();
+    });
+  });
+
+  // My feed pill dropdown logic
+  if (myFeedPill) {
+    myFeedPill.addEventListener('click', function(event) {
+      event.stopPropagation(); // Prevent global click listener from closing it immediately
+      const isMyFeedsDropdownOpen = myFeedsDropdownMenu.style.display === 'block';
+      // Close all other dropdowns. If MyFeeds is already open, this click will close it.
+      // If it's closed, this will prepare to open it by closing others.
+      closeAllDropdowns(isMyFeedsDropdownOpen ? null : myFeedsDropdownMenu);
+      
+      if (!isMyFeedsDropdownOpen) {
+        myFeedsDropdownMenu.style.display = 'block';
+      } else {
+        // If it was open, closeAllDropdowns(null) already handled it.
+        // For clarity, ensure it's closed if it was open.
+        myFeedsDropdownMenu.style.display = 'none'; 
+      }
+    });
+  }
+
+  if (feedOptions) {
+    feedOptions.forEach(option => {
+      option.addEventListener('click', function(event) {
+        event.stopPropagation(); // Prevent segment click and global click
+        // Update the pill value instead of the input
+        if (myFeedValue) myFeedValue.textContent = option.dataset.value || option.textContent.trim();
+        if (myFeedsDropdownMenu) myFeedsDropdownMenu.style.display = 'none';
+        updateButtonsDisplay(); // Check if buttons should change
+      });
+    });
+  }
+  
+  // Set up event listeners for all filter dropdown options
+  // 1. Where filter dropdown options
+  const locationOptions = document.querySelectorAll('.location-option');
+  locationOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      setTimeout(updateButtonsDisplay, 50); // Small delay to ensure input value is updated
+    });
+  });
+  
+  // 2. When filter dropdown options - enhanced detection
+  // Get direct reference to the when segment
+  const whenSegment = document.getElementById('search-when');
+  
+  // Method 1: Direct handling for when segment click
+  if (whenSegment) {
+    whenSegment.addEventListener('click', function() {
+      console.log('When segment clicked directly');
+      // Set direct flag to indicate when filter is being used
+      whenFilterSelected = true;
+      updateButtonsDisplay();
+    });
+  }
+  
+  // Method 2: Listen to the checkboxes
+  const dateOptions = document.querySelectorAll('.date-option-checkbox');
+  dateOptions.forEach(option => {
+    option.addEventListener('change', function() {
+      console.log('Date checkbox changed');
+      whenFilterSelected = true;
+      setTimeout(updateButtonsDisplay, 50);
+    });
+  });
+  
+  // Method 3: Listen to the date option labels
+  const dateOptionLabels = document.querySelectorAll('.date-option-label');
+  dateOptionLabels.forEach(label => {
+    label.addEventListener('click', function() {
+      console.log('Date option clicked');
+      whenFilterSelected = true;
+      setTimeout(updateButtonsDisplay, 100);
+    });
+  });
+  
+  // Method 4: Listen to the when-dropdown for changes in visibility
+  if (whenDropdown) {
+    const whenObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(mutation => {
+        if (mutation.attributeName === 'style') {
+          if (whenDropdown.style.display === 'block') {
+            // Dropdown was opened
+            console.log('When dropdown opened');
+            whenFilterSelected = true;
+            updateButtonsDisplay();
+          } else if (whenDropdown.style.display === 'none') {
+            // Dropdown was closed, which might indicate a selection was made
+            console.log('When dropdown closed');
+            setTimeout(updateButtonsDisplay, 50);
+          }
+        }
+      });
+    });
+    whenObserver.observe(whenDropdown, { attributes: true, attributeFilter: ['style'] });
+  }
+  
+  // 3. What activity filter dropdown options - more comprehensive detection
+  // Method 1: Listen to the checkboxes
+  const activityOptions = document.querySelectorAll('.activity-option-checkbox');
+  activityOptions.forEach(option => {
+    option.addEventListener('change', function() {
+      console.log('Activity checkbox changed');
+      setTimeout(updateButtonsDisplay, 50);
+    });
+  });
+  
+  // Method 2: Listen to the activity dropdown button clicks directly
+  const activityOptionsButtons = document.querySelectorAll('.activity-option-item');
+  activityOptionsButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      console.log('Activity option clicked');
+      setTimeout(updateButtonsDisplay, 100);
+    });
+  });
+    // Method 3: Listen to the activity-dropdown for changes in visibility
+    if (activityDropdown) {
+    const activityObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(mutation => {
+        if (mutation.attributeName === 'style' && activityDropdown.style.display === 'none') {
+          // Dropdown was just closed, which might indicate a selection was made
+          console.log('Activity dropdown closed');
+          setTimeout(updateButtonsDisplay, 50);
+        }
+      });
+    });
+    activityObserver.observe(activityDropdown, { attributes: true, attributeFilter: ['style'] });
+  }
+  
+  // 4. Who/Group size filter - enhanced detection
+  // Get direct reference to the who segment
+  const whoSegment = document.getElementById('search-who');
+  
+  // Method 1: Direct handling for who segment click
+  if (whoSegment) {
+    whoSegment.addEventListener('click', function() {
+      console.log('Who segment clicked directly');
+      // Set direct flag to indicate who filter is being used
+      whoFilterSelected = true;
+      updateButtonsDisplay();
+    });
+  }
+  
+  // Method 2: Listen to the stepper buttons
+  const groupSizeButtons = document.querySelectorAll('.btn-stepper');
+  groupSizeButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      console.log('Group size button clicked');
+      whoFilterSelected = true;
+      setTimeout(updateButtonsDisplay, 50);
+    });
+  });
+  
+  // Method 3: Listen to the group-size-popover for changes in visibility
+  if (groupSizePopover) {
+    const whoObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(mutation => {
+        if (mutation.attributeName === 'style') {
+          if (groupSizePopover.style.display === 'block') {
+            // Popover was opened
+            console.log('Who popover opened');
+            whoFilterSelected = true;
+            updateButtonsDisplay();
+          } else if (groupSizePopover.style.display === 'none') {
+            // Popover was closed
+            console.log('Who popover closed');
+            setTimeout(updateButtonsDisplay, 50);
+          }
+        }
+      });
+    });
+    whoObserver.observe(groupSizePopover, { attributes: true, attributeFilter: ['style'] });
+  }
+  
+  // Also listen for direct changes to the inputs (though they're readonly)
+  const filterInputs = [whereInput, whenInput, activityInput, whoInput];
+  filterInputs.forEach(input => {
+    if (input) {
+      input.addEventListener('change', updateButtonsDisplay);
+      // Also detect when input gets a value programmatically
+      const observer = new MutationObserver(function(mutations) {
+        updateButtonsDisplay();
+      });
+      observer.observe(input, { attributes: true, attributeFilter: ['value'] });
+    }
+  });
+  
+  // Add click handlers for the action buttons
+  if (saveAsDefaultBtn) {
+    saveAsDefaultBtn.addEventListener('click', function() {
+      console.log('Save as default clicked');
+      // Logic to save current filter configuration as default would go here
+    });
+  }
+  
+  if (restoreBtn) {
+    restoreBtn.addEventListener('click', function() {
+      console.log('Restore clicked');
+      // Logic to restore default filters would go here
+      // Also reset filter flags when filters are restored
+      whenFilterSelected = false;
+      whoFilterSelected = false;
+      updateButtonsDisplay();
+    });
+  }
+  
+  if (filterMenuBtn) {
+    filterMenuBtn.addEventListener('click', function() {
+      console.log('Filter menu clicked');
+      // Logic to show filter menu options would go here
+    });
+  }
+
+  // Global click listener to close dropdowns when clicking outside
+  document.addEventListener('click', function(event) {
+    const segmentsWithDropdowns = [
+      document.getElementById('search-where'),
+      document.getElementById('search-when'),
+      document.getElementById('search-activity'),
+      document.getElementById('search-who'),
+      myFeedsFilterSegment
+    ];
+
+    let clickInsideSegment = segmentsWithDropdowns.some(segment => segment && segment.contains(event.target));
+    
+    // If the click is not on any segment that toggles a dropdown, close all dropdowns.
+    // This relies on clicks on options *within* dropdowns using event.stopPropagation().
+    if (!clickInsideSegment) {
+      closeAllDropdowns(null);
+    }
+  });
+
+  // Initialize view based on current active nav button (e.g., on page load)
+  const activeNav = document.querySelector('.nav-btn.active');
+  if (activeNav) {
+    handleNavClick({ currentTarget: activeNav }); // Simulate a click to set initial state
+  }
+
+  // Mobile bottom navigation and My Feeds handling
+  const mobileNavItems = document.querySelectorAll('.mobile-bottom-nav .mobile-nav-item');
+  const unifiedSearchStartBtnMobile = document.getElementById('unified-search-start-btn-mobile');
+  const mobileMyFeedsSelector = document.getElementById('mobile-my-feeds-selector');
+  const mobileFilterIconContainer = document.getElementById('mobile-filter-icon-container');
+  const mobileFeedsDropdown = document.getElementById('mobile-feeds-dropdown');
+  const selectedFeedNameMobile = document.getElementById('selected-feed-name-mobile');
+  const mobileFeedOptions = document.querySelectorAll('.mobile-feeds-dropdown .mobile-feed-option');
+  const mobileViewFeedButton = document.getElementById('mobile-view-feed-button');
+
+  mobileNavItems.forEach(item => {
+    item.addEventListener('click', function() {
+      // Remove active class from all items
+      mobileNavItems.forEach(i => i.classList.remove('active'));
+      // Add active class to the clicked item
+      this.classList.add('active');
+
+      const clickedItemText = this.querySelector('span').textContent.trim();
+
+      if (clickedItemText === 'My Feeds') {
+        unifiedSearchStartBtnMobile.style.display = 'none';
+        mobileMyFeedsSelector.style.display = 'flex'; // Use flex as per inline styles
+        if (mobileFilterIconContainer) mobileFilterIconContainer.style.display = 'flex';
+        selectedFeedNameMobile.textContent = 'All feeds'; // Default to "All feeds"
+        if (mobileViewFeedButton) mobileViewFeedButton.style.display = 'none'; // Hide by default, show only if a specific feed is chosen
+        // Potentially load "All feeds" content/filters here
+      } else {
+        unifiedSearchStartBtnMobile.style.display = 'flex'; // Or 'block' depending on its default
+        mobileMyFeedsSelector.style.display = 'none';
+        mobileFeedsDropdown.style.display = 'none'; // Hide dropdown if switching away from My Feeds
+        if (mobileFilterIconContainer) mobileFilterIconContainer.style.display = 'none';
+        if (mobileViewFeedButton) mobileViewFeedButton.style.display = 'none';
+      }
+      // Add logic for other tabs like "My Dominos" if needed
+    });
+  });
+
+  // Toggle mobile feeds dropdown
+  if (mobileMyFeedsSelector) {
+    mobileMyFeedsSelector.addEventListener('click', function() {
+      const isDropdownVisible = mobileFeedsDropdown.style.display === 'block';
+      mobileFeedsDropdown.style.display = isDropdownVisible ? 'none' : 'block';
+    });
+  }
+
+  // Handle mobile feed option selection
+  mobileFeedOptions.forEach(option => {
+    option.addEventListener('click', function(event) {
+      event.stopPropagation(); // Prevent the selector's click event from re-toggling
+      const selectedValue = this.dataset.value;
+      selectedFeedNameMobile.textContent = selectedValue;
+      mobileFeedsDropdown.style.display = 'none';
+      if (mobileViewFeedButton) {
+        if (selectedValue === 'All feeds') {
+          mobileViewFeedButton.style.display = 'none';
+        } else {
+          mobileViewFeedButton.style.display = 'flex';
+        }
+      }
+      // Placeholder: Logic to apply filters for the selected feed
+      // console.log('Selected mobile feed:', selectedValue);
+      // Example: applyFeedFilters(selectedValue);
+    });
+  });
+
+  // Optional: Close mobile feeds dropdown if clicking outside of it
+  document.addEventListener('click', function(event) {
+    if (mobileFeedsDropdown && mobileMyFeedsSelector) {
+      const isClickInsideSelector = mobileMyFeedsSelector.contains(event.target);
+      const isClickInsideDropdown = mobileFeedsDropdown.contains(event.target);
+      if (!isClickInsideSelector && !isClickInsideDropdown) {
+        mobileFeedsDropdown.style.display = 'none';
+      }
+    }
+  });
+
+});
+</script>
+</body>
+</html>

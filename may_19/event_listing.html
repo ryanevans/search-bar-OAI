@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Domino · Event Listing</title>
+
+  <!-- Fonts / base stylesheet -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="page-event-listing">
+  <!-- -------- Header (unchanged) -------- -->
+  <header class="header">
+    <div class="header-logo">
+      <img src="img/logo_black.png" alt="Domino Logo">
+    </div>
+    <div class="header-nav-links">
+      <button type="button" id="explore-btn">Explore</button>
+      <button type="button" id="my-dominos-btn">My Dominos</button>
+      <button type="button" id="my-feeds-btn">My Feeds</button>
+    </div>
+    <div class="header-user-menu"><img src="https://placehold.co/30x30/png?text=U" alt="User Menu"></div>
+  </header>
+
+  <!-- -------- Filter bar (unchanged markup) -------- -->
+  <div class="wrapper">
+    <nav class="filter-bar flex-wrap">
+      <div class="custom-select-wrapper">
+          <select name="groups">
+              <option>Brunch Bunch</option>
+              <option>Andrew & Ryan</option>
+              <option>Comedy Crew</option>
+              <option>Movie Mates</option>
+              <option>Sunday Funday</option>
+          </select>
+          <img src="img/arrow_icon_down.svg" alt="Dropdown arrow" class="custom-select-arrow">
+      </div>
+      <div class="custom-select-wrapper primary-filter-item">
+          <select name="city">
+              <option>Any City</option>
+              <option>Chicago</option>
+              <option>New York</option>
+              <option>Los Angeles</option>
+              <option>Miami</option>
+              <option>Austin</option>
+          </select>
+          <img src="img/arrow_icon_down.svg" alt="Dropdown arrow" class="custom-select-arrow">
+      </div>
+      <div class="custom-select-wrapper primary-filter-item">
+          <select name="where">
+              <option>Any Area</option>
+              <option>Downtown</option>
+              <option>Uptown</option>
+              <option>River North</option>
+              <option>Lincoln Park</option>
+              <option>Wicker Park</option>
+          </select>
+          <img src="img/arrow_icon_down.svg" alt="Dropdown arrow" class="custom-select-arrow">
+      </div>
+      <div class="custom-select-wrapper primary-filter-item">
+          <select name="activity">
+              <option>All Activities</option>
+              <option>Breakfast</option>
+              <option>Lunch</option>
+              <option>Dinner</option>
+              <option>Coffee</option>
+              <option>Drinks</option>
+              <option>Live Music</option>
+          </select>
+          <img src="img/arrow_icon_down.svg" alt="Dropdown arrow" class="custom-select-arrow">
+      </div>
+      <div class="custom-select-wrapper primary-filter-item">
+          <select name="time">
+              <option>Any Time</option>
+              <option>Today</option>
+              <option>Tomorrow</option>
+              <option>This weekend</option>
+              <option>Next week</option>
+              <option>Next weekend</option>
+          </select>
+          <img src="img/arrow_icon_down.svg" alt="Dropdown arrow" class="custom-select-arrow">
+      </div>
+      <div class="custom-select-wrapper primary-filter-item">
+          <select name="people">
+              <option>Group Size</option>
+              <option>2 people</option>
+              <option>3-4 people</option>
+              <option>5+ people</option>
+          </select>
+          <img src="img/arrow_icon_down.svg" alt="Dropdown arrow" class="custom-select-arrow">
+      </div>
+      <button type="button" id="clear-filters-btn" class="filter-action-link primary-filter-item">Clear</button>
+      <button type="button" id="edit-group-prefs-btn" class="filter-action-link primary-filter-item" style="display: none;">Edit Preferences</button>
+      <button type="button" id="create-group-btn" class="filter-create" data-modal-target="saveFeedModalOverlay">
+          Save as Feed
+          <img src="/Users/ryanevans/Desktop/Domino explanation modal/new_version/img/bookmark.svg" alt="Bookmark icon" style="height: 0.8em; margin-left: 6px;">
+      </button>
+      <button type="button" id="add-friend-btn" class="filter-create" style="display: none;">
+          Add friend
+          <img src="/Users/ryanevans/Desktop/Domino explanation modal/new_version/img/plus.svg" alt="Add friend icon" style="height: 0.8em; margin-left: 6px;">
+      </button>
+      <!-- 'My Dominos' specific buttons - moved here, hidden by default -->
+      <button type="button" id="likes-btn" class="toggle-filter-btn domino-specific-btn" style="display: none;">Likes</button>
+      <button type="button" id="pending-btn" class="toggle-filter-btn domino-specific-btn" style="display: none;">Pending</button>
+      <button type="button" id="upcoming-btn" class="toggle-filter-btn domino-specific-btn" style="display: none;">Upcoming</button>
+      <button type="button" id="past-btn" class="toggle-filter-btn domino-specific-btn" style="display: none;">Past</button>
+  </nav>
+  
+  <!-- Alternative second row (visible when My Dominos is selected) -->
+  <div class="secondary-filters hidden">
+      <!-- Content moved to filter-bar -->
+  </div>
+  </div>
+
+  <!-- -------- Main event listing (first card   already shows markup w/ heart) -------- -->
+    <main class="wrapper">
+      <!-- Breakfast Section -->
+      <section class="event-section">
+        <div class="section-header">
+          <h2>Breakfast in Lakeview</h2>
+          <div class="view-all-controls">
+            <a href="#">View all</a>
+            <button class="arrow-btn"><img src="img/chevron-left.svg" alt="Previous"></button>
+            <button class="arrow-btn"><img src="img/chevron-right.svg" alt="Next"></button>
+          </div>
+        </div>
+        <div class="event-cards-container">
+          <!-- Card 1 -->
+          <div class="event-card">
+            <!-- put this immediately after the opening <div class="event-card"> … -->
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+  
+            <img src="img/venues/cafe_paris.jpg" alt="Maison Parisienne" class="event-image">
+            <div class="card-content">
+              <h3>Breakfast at Maison Parisienne - French Café</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Maison Parisienne - French Café</span>
+                      <span class="venue-address">3307 N Clark St, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Friday, Jul 19 · 8:00 AM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/los 3 panchos.jpg" alt="Los 3 Panchos" class="event-image">
+            <div class="card-content">
+              <h3>Breakfast at Los 3 Panchos</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Los 3 Panchos</span>
+                      <span class="venue-address">1155 W Diversey Pkwy, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Saturday, Jul 20 · 9:00 AM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/little goat.jpeg" alt="Little Goat Diner" class="event-image">
+            <div class="card-content">
+              <h3>Breakfast at Little Goat Diner</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Little Goat Diner</span>
+                      <span class="venue-address">3325 N Southport Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Sunday, Jul 21 · 10:00 AM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Dinner Section -->
+      <section class="event-section">
+        <div class="section-header">
+          <h2>Dinner in Lakeview</h2>
+          <div class="view-all-controls">
+            <a href="#">View all</a>
+            <button class="arrow-btn"><img src="img/chevron-left.svg" alt="Previous"></button>
+            <button class="arrow-btn"><img src="img/chevron-right.svg" alt="Next"></button>
+          </div>
+        </div>
+        <div class="event-cards-container">
+          <!-- Card 1 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/kims sushi.jpeg" alt="Kim's Korean Cuisine" class="event-image">
+            <div class="card-content">
+              <h3>Dinner at Kim's Korean Cuisine & Sushi</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Kim's Korean Cuisine & Sushi</span>
+                      <span class="venue-address">3422 N Lincoln Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Monday, Jul 22 · 6:00 PM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/Dona Torta.jpeg" alt="Doña Tota" class="event-image">
+            <div class="card-content">
+              <h3>Dinner at Doña Tota</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Doña Tota</span>
+                      <span class="venue-address">3751 N Southport Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Tuesday, Jul 23 · 7:00 PM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/Szechuan Corner.jpeg" alt="Szechuan Corner" class="event-image">
+            <div class="card-content">
+              <h3>Dinner at Szechuan Corner</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Szechuan Corner</span>
+                      <span class="venue-address">2913 N Ashland Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Wednesday, Jul 24 · 8:00 PM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Lunch Section -->
+      <section class="event-section">
+        <div class="section-header">
+          <h2>Lunch in Logan Square</h2>
+          <div class="view-all-controls">
+            <a href="#">View all</a>
+            <button class="arrow-btn"><img src="img/chevron-left.svg" alt="Previous"></button>
+            <button class="arrow-btn"><img src="img/chevron-right.svg" alt="Next"></button>
+          </div>
+        </div>
+        <div class="event-cards-container">
+          <!-- Card 1 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/wonder chop.jpeg" alt="Wonder Chop" class="event-image">
+            <div class="card-content">
+              <h3>Lunch at Wonder Chop</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Wonder Chop</span>
+                      <span class="venue-address">2419 W Fullerton Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Thursday, Jul 25 · 12:00 PM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/Caribella.jpeg" alt="Caribella" class="event-image">
+            <div class="card-content">
+              <h3>Tropical Lunch Experience at Caribella</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">CARIBELLA</span>
+                      <span class="venue-address">3311 W Fullerton Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Friday, Jul 26 · 1:00 PM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="event-card">
+            <svg class="heart-icon" viewBox="-0.75 -0.75 17.5 17.5" aria-hidden="true" role="presentation" focusable="false">
+              <!-- 1️⃣ SOLID FILL SHAPE (no stroke) -->
+              <path class="heart-fill" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+              <!-- 2️⃣ WHITE OUTLINE (no fill) -->
+              <path class="heart-outline" d="M8 2.748c-1.87-2-5.6-2-7.2.787C-.66 5.522.049 8.522 2.8 11.174 4.6 12.921 6.89 14.54 8 15s3.4-2.079 5.2-3.826c2.75-2.652 3.46-5.652 2-7.639C13.6.748 9.87.748 8 2.748Z"/>
+            </svg>
+            <img src="img/venues/cozy corner.jpeg" alt="Cozy Corner" class="event-image">
+            <div class="card-content">
+              <h3>Lunch at Cozy Corner Restaurant and Pancake House</h3>
+              <div class="card-meta">
+                <div class="details-row">
+                  <img src="img/map_icon.svg" alt="Location icon">
+                  <span class="venue-location-text">
+                      <span class="venue-name">Cozy Corner Restaurant and Pancake House</span>
+                      <span class="venue-address">2294 N Milwaukee Ave, Chicago, IL</span>
+                  </span>
+                </div>
+                <div class="details-row">
+                  <img src="img/calendar.svg" alt="Date icon">
+                  <span><span>Saturday, Jul 27 · 11:30 AM</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <div class="see-more-container">
+          <button class="btn btn-secondary see-more-btn">See More</button>
+      </div>
+  </main>
+
+  <footer class="footer">
+    Terms of Use • Privacy policy • Contact Us<br>&copy; Timber Ridge Capital, LLC 2022
+  </footer>
+
+<!-- Save Feed Modal HTML -->
+<div id="saveFeedModalOverlay" class="modal-overlay">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="saveFeedModalTitle">
+        <div class="modal-header">
+            <button type="button" class="btn btn-close-modal" id="modalCloseBtn" aria-label="Close save feed modal" data-modal-dismiss="true">&times;</button>
+            <h2 class="modal-title" id="saveFeedModalTitle">Save feed</h2> 
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <!-- Input wrapper for floating label effect -->
+                <div class="input-wrapper">
+                    <label for="feedNameInput" class="floating-label">Name</label>
+                    <input type="text" id="feedNameInput" value="Brunch in Lakeview" maxlength="50">
+                </div>
+                <small id="feedNameCharCount">17/50 characters</small>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="modalClearBtn" class="btn reset-appearance btn-link">Clear</button> 
+            <button id="modalSaveBtn" class="btn btn-primary">Save and view feed</button> 
+        </div>
+    </div>
+</div>
+<!-- Share Feed Modal HTML (styled same as Save Feed Modal) -->
+<div id="shareFeedModalOverlay" class="modal-overlay">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="shareFeedModalTitle">
+        <div class="modal-header">
+            <h2 class="modal-title" id="shareFeedModalTitle">Share Feed</h2> 
+            <button type="button" class="btn btn-close-modal" id="shareFeedModalCloseXBtn" aria-label="Close share feed modal" data-modal-dismiss="true">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <label for="shareFeedLink" class="floating-label">Link</label>
+                    <input type="text" id="shareFeedLink" value="" readonly> 
+                    <button id="copyLinkBtn" class="copy-btn icon-btn" aria-label="Copy link"><img src="img/copy.svg" alt="Copy" class="icon-svg"></button>
+                </div>
+            </div>
+            <!-- Collapsible Personal Message Section -->
+            <div class="collapsible-section">
+                <div class="collapsible-header">
+                    <button type="button" id="togglePersonalMessage" class="collapsible-toggle" aria-expanded="false">
+                        Add a personal message <img src="img/chevron-right.svg" alt="Toggle message" class="icon-svg personal-message-chevron" id="personalMessageChevron">
+                    </button>
+                    <button id="copyMessageBtn" class="copy-btn icon-btn" aria-label="Copy message"><img src="img/copy.svg" alt="Copy" class="icon-svg"></button>
+                </div>
+                <div id="personalMessageContent" class="collapsible-content" style="display: none;">
+                    <div class="form-group" style="margin-top: 10px;">
+                        <textarea id="personalMessageTextarea" rows="3">Hey! I made “{feedName}” feed on Domino - it comes up with hangout ideas and pings us when someone's interested. Take a look: {URL}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Share with Friends (Placeholder) -->
+            <div class="share-options">
+                <p><strong>Or, share with friends on Domino:</strong></p>
+                <!-- Placeholder for friend list/selector -->
+                <div class="friend-selector-placeholder">
+                    [Friend selector/search will go here]
+                    <button class="btn btn-primary" id="sendInvitesBtn" style="margin-top: 10px; width: 100%;">Send Invites</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="shareFeedModalCloseFooterBtn" data-modal-dismiss="true">Done</button> 
+        </div>
+    </div>
+</div>
+
+  <script src="main.js" defer></script>
+</body>
+</html>
