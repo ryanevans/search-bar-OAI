@@ -71,8 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       // Global keydown listener is already active.
-    } else {
-      console.warn(`Modal with ID "${modalId}" not found.`);
     }
   }
 
@@ -93,8 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       // Global keydown listener remains active. It won't interfere.
-    } else {
-      console.warn(`Modal with ID "${modalId}" not found.`);
     }
   }
 
@@ -752,7 +748,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const sepLine2Middle = document.getElementById('separator-when-group'); // Changed from applied-filter-sep-line2-middle;
 
     if (!defaultContent || !appliedFiltersContent || !whereDisplay || !activityDisplay || !whenDisplay || !groupSizeDisplay || !sepLine1 || !sepLine2Middle) {
-      console.warn('One or more mobile search button display elements are missing.');
       return;
     }
 
@@ -1237,5 +1232,469 @@ document.addEventListener('DOMContentLoaded', () => {
       // Placeholder for actual invite logic
     });
   }
+
+  function initSaveFeedModal() {
+    const feedNameInput = document.getElementById('feedNameInput');
+    const feedNameLabel = document.getElementById('feedNameLabel');
+    const saveFeedButton = document.getElementById('saveFeedConfirmBtn');
+    const charCountElement = document.getElementById('feedNameCharCount');
+    const modalClearButton = document.getElementById('modalClearBtn');
+
+    if (!feedNameInput || !feedNameLabel || !saveFeedButton || !charCountElement || !modalClearButton) {
+      return;
+    }
+
+    const maxChars = 50;
+
+    const activeButtonCssText =
+      'background-color: #000000; color: #ffffff; border: 1px solid #000000; padding: 12px 24px; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;';
+    const disabledButtonCssText =
+      'background-color: #e9ecef; color: #adb5bd; border: 1px solid #ced4da; padding: 12px 24px; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: not-allowed; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;';
+
+    const originalClearButtonColor = window.getComputedStyle(modalClearButton).color;
+
+    const labelPlaceholderStyle = { top: '14px', fontSize: '1rem', color: '#6c757d', backgroundColor: 'transparent', padding: '0' };
+    const labelFloatedStyle = { top: '6px', fontSize: '0.75rem', color: '#000000', backgroundColor: '#ffffff', padding: '0 5px' };
+
+    function applyStyle(element, styleObject) {
+      for (const property in styleObject) {
+        element.style[property] = styleObject[property];
+      }
+    }
+
+    function updateInputAndLabelState() {
+      const hasValue = feedNameInput.value.length > 0;
+      const isFocused = document.activeElement === feedNameInput;
+
+      charCountElement.textContent = `${feedNameInput.value.length}/${maxChars} characters`;
+
+      if (hasValue) {
+        saveFeedButton.disabled = false;
+        saveFeedButton.style.cssText = activeButtonCssText;
+      } else {
+        saveFeedButton.disabled = true;
+        saveFeedButton.style.cssText = disabledButtonCssText;
+      }
+
+      if (hasValue || isFocused) {
+        applyStyle(feedNameLabel, labelFloatedStyle);
+      } else {
+        applyStyle(feedNameLabel, labelPlaceholderStyle);
+      }
+
+      if (!isFocused) {
+        feedNameInput.style.borderColor = '#ced4da';
+      } else {
+        feedNameInput.style.borderColor = '#000000';
+      }
+    }
+
+    feedNameInput.addEventListener('input', updateInputAndLabelState);
+
+    feedNameInput.addEventListener('focus', function () {
+      feedNameInput.style.borderColor = '#000000';
+      applyStyle(feedNameLabel, labelFloatedStyle);
+    });
+
+    feedNameInput.addEventListener('blur', function () {
+      updateInputAndLabelState();
+    });
+
+    modalClearButton.addEventListener('mouseover', function () {
+      modalClearButton.style.color = '#000000';
+    });
+    modalClearButton.addEventListener('mouseout', function () {
+      modalClearButton.style.color = originalClearButtonColor;
+    });
+
+    updateInputAndLabelState();
+  }
+
+  function initNavigationAndFilters() {
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const exploreBtn = document.getElementById('explore-btn');
+    const myFeedsBtn = document.getElementById('my-feeds-btn');
+    const unifiedSearchBar = document.querySelector('.unified-search-bar');
+    const saveFeedBtn = document.getElementById('unified-save-feed-btn');
+    const saveFeedBtnImg = saveFeedBtn ? saveFeedBtn.querySelector('img') : null;
+    const saveFeedBtnTextNode = saveFeedBtn ? saveFeedBtn.childNodes[0] : null;
+
+    const filterActionButtons = document.getElementById('filter-action-buttons');
+    const saveAsDefaultBtn = document.getElementById('save-as-default-btn');
+    const restoreBtn = document.getElementById('restore-btn');
+    const filterMenuBtn = document.getElementById('filter-menu-btn');
+
+    const myFeedPillContainer = document.getElementById('my-feed-pill-container');
+    const myFeedPill = document.getElementById('my-feed-pill');
+    const myFeedValue = document.getElementById('my-feed-value');
+    const myFeedsDropdownMenu = document.getElementById('my-feeds-dropdown-menu');
+    const feedOptions = myFeedsDropdownMenu ? myFeedsDropdownMenu.querySelectorAll('.feed-option') : [];
+
+    const whereInput = document.getElementById('search-input-where');
+    const whenInput = document.getElementById('search-input-when');
+    const activityInput = document.getElementById('search-input-activity');
+    const whoInput = document.getElementById('search-input-who');
+
+    let filtersActive = false;
+
+    const whereDropdown = document.getElementById('where-dropdown-menu');
+    const whenDropdown = document.getElementById('when-dropdown-menu');
+    const activityDropdown = document.getElementById('activity-dropdown-menu');
+    const groupSizePopover = document.getElementById('group-size-popover');
+
+    function closeAllDropdowns(exceptDropdown) {
+      const dropdowns = [whereDropdown, whenDropdown, activityDropdown, groupSizePopover, myFeedsDropdownMenu];
+      dropdowns.forEach(dropdown => {
+        if (dropdown && dropdown !== exceptDropdown && dropdown.style.display !== 'none') {
+          dropdown.style.display = 'none';
+        }
+      });
+    }
+
+    let whenFilterSelected = false;
+    let whoFilterSelected = false;
+
+    function checkFiltersActive() {
+      if (whenFilterSelected || whoFilterSelected) {
+        return true;
+      }
+      return (
+        (whereInput && whereInput.value.trim() !== '') ||
+        (whenInput && whenInput.value.trim() !== '' && whenInput.value.trim() !== 'Preferred days') ||
+        (activityInput && activityInput.value.trim() !== '' && activityInput.value.trim() !== 'Add activity') ||
+        (whoInput && whoInput.value.trim() !== '' && whoInput.value.trim() !== '2')
+      );
+    }
+
+    function updateButtonsDisplay() {
+      const isMyFeedsActive = document.getElementById('my-feeds-btn')?.classList.contains('active');
+      if (!isMyFeedsActive) return;
+
+      filtersActive = checkFiltersActive();
+
+      if (filtersActive) {
+        if (filterActionButtons) {
+          filterActionButtons.style.display = 'flex';
+        }
+        if (saveFeedBtn) {
+          saveFeedBtn.style.display = 'none';
+        }
+      } else {
+        if (filterActionButtons) {
+          filterActionButtons.style.display = 'none';
+        }
+        if (saveFeedBtn) {
+          saveFeedBtn.style.display = 'inline-flex';
+        }
+      }
+    }
+
+    function handleNavClick(event) {
+      navButtons.forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      const clickedButtonId = event.currentTarget.id;
+
+      if (clickedButtonId === 'my-feeds-btn') {
+        if (myFeedPillContainer) myFeedPillContainer.style.display = 'block';
+        if (unifiedSearchBar) unifiedSearchBar.classList.add('my-feeds-filter-active');
+        if (saveFeedBtn) {
+          if (saveFeedBtnTextNode) saveFeedBtnTextNode.nodeValue = 'Share Feed ';
+          if (saveFeedBtnImg) {
+            saveFeedBtnImg.src = 'img/arrow-up-right.svg';
+            saveFeedBtnImg.alt = 'Share Feed';
+            saveFeedBtnImg.classList.add('share-icon-white');
+          }
+        }
+        updateButtonsDisplay();
+      } else {
+        if (myFeedPillContainer) myFeedPillContainer.style.display = 'none';
+        if (unifiedSearchBar) unifiedSearchBar.classList.remove('my-feeds-filter-active');
+        if (saveFeedBtn) {
+          saveFeedBtn.style.display = 'none';
+          if (saveFeedBtnTextNode) saveFeedBtnTextNode.nodeValue = 'Save Feed ';
+          if (saveFeedBtnImg) {
+            saveFeedBtnImg.src = 'img/bookmark_white.svg';
+            saveFeedBtnImg.alt = 'Save Feed';
+            saveFeedBtnImg.classList.remove('share-icon-white');
+          }
+        }
+        whenFilterSelected = false;
+        whoFilterSelected = false;
+        if (filterActionButtons) filterActionButtons.style.display = 'none';
+        if (myFeedsDropdownMenu && myFeedsDropdownMenu.style.display !== 'none') {
+          myFeedsDropdownMenu.style.display = 'none';
+        }
+      }
+      closeAllDropdowns(null);
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', handleNavClick);
+    });
+
+    function forceUIUpdate() {
+      setTimeout(function () {
+        updateButtonsDisplay();
+      }, 200);
+    }
+
+    const searchSegments = document.querySelectorAll('.search-bar-segment');
+    searchSegments.forEach(segment => {
+      segment.addEventListener('click', function () {
+        forceUIUpdate();
+      });
+    });
+
+    if (myFeedPill) {
+      myFeedPill.addEventListener('click', function (event) {
+        event.stopPropagation();
+        const isMyFeedsDropdownOpen = myFeedsDropdownMenu.style.display === 'block';
+        closeAllDropdowns(isMyFeedsDropdownOpen ? null : myFeedsDropdownMenu);
+        if (!isMyFeedsDropdownOpen) {
+          myFeedsDropdownMenu.style.display = 'block';
+        } else {
+          myFeedsDropdownMenu.style.display = 'none';
+        }
+      });
+    }
+
+    if (feedOptions) {
+      feedOptions.forEach(option => {
+        option.addEventListener('click', function (event) {
+          event.stopPropagation();
+          if (myFeedValue) myFeedValue.textContent = option.dataset.value || option.textContent.trim();
+          if (myFeedsDropdownMenu) myFeedsDropdownMenu.style.display = 'none';
+          updateButtonsDisplay();
+        });
+      });
+    }
+
+    const locationOptions = document.querySelectorAll('.location-option');
+    locationOptions.forEach(option => {
+      option.addEventListener('click', function () {
+        setTimeout(updateButtonsDisplay, 50);
+      });
+    });
+
+    const whenSegment = document.getElementById('search-when');
+
+    if (whenSegment) {
+      whenSegment.addEventListener('click', function () {
+        whenFilterSelected = true;
+        updateButtonsDisplay();
+      });
+    }
+
+    const dateOptions = document.querySelectorAll('.date-option-checkbox');
+    dateOptions.forEach(option => {
+      option.addEventListener('change', function () {
+        whenFilterSelected = true;
+        setTimeout(updateButtonsDisplay, 50);
+      });
+    });
+
+    const dateOptionLabels = document.querySelectorAll('.date-option-label');
+    dateOptionLabels.forEach(label => {
+      label.addEventListener('click', function () {
+        whenFilterSelected = true;
+        setTimeout(updateButtonsDisplay, 100);
+      });
+    });
+
+    if (whenDropdown) {
+      const whenObserver = new MutationObserver(function (mutations) {
+        mutations.forEach(mutation => {
+          if (mutation.attributeName === 'style') {
+            if (whenDropdown.style.display === 'block') {
+              whenFilterSelected = true;
+              updateButtonsDisplay();
+            } else if (whenDropdown.style.display === 'none') {
+              setTimeout(updateButtonsDisplay, 50);
+            }
+          }
+        });
+      });
+      whenObserver.observe(whenDropdown, { attributes: true, attributeFilter: ['style'] });
+    }
+
+    const activityOptions = document.querySelectorAll('.activity-option-checkbox');
+    activityOptions.forEach(option => {
+      option.addEventListener('change', function () {
+        setTimeout(updateButtonsDisplay, 50);
+      });
+    });
+
+    const activityOptionsButtons = document.querySelectorAll('.activity-option-item');
+    activityOptionsButtons.forEach(button => {
+      button.addEventListener('click', function () {
+        setTimeout(updateButtonsDisplay, 100);
+      });
+    });
+
+    if (activityDropdown) {
+      const activityObserver = new MutationObserver(function (mutations) {
+        mutations.forEach(mutation => {
+          if (mutation.attributeName === 'style' && activityDropdown.style.display === 'none') {
+            setTimeout(updateButtonsDisplay, 50);
+          }
+        });
+      });
+      activityObserver.observe(activityDropdown, { attributes: true, attributeFilter: ['style'] });
+    }
+
+    const whoSegment = document.getElementById('search-who');
+
+    if (whoSegment) {
+      whoSegment.addEventListener('click', function () {
+        whoFilterSelected = true;
+        updateButtonsDisplay();
+      });
+    }
+
+    const groupSizeButtons = document.querySelectorAll('.btn-stepper');
+    groupSizeButtons.forEach(button => {
+      button.addEventListener('click', function () {
+        whoFilterSelected = true;
+        setTimeout(updateButtonsDisplay, 50);
+      });
+    });
+
+    if (groupSizePopover) {
+      const whoObserver = new MutationObserver(function (mutations) {
+        mutations.forEach(mutation => {
+          if (mutation.attributeName === 'style') {
+            if (groupSizePopover.style.display === 'block') {
+              whoFilterSelected = true;
+              updateButtonsDisplay();
+            } else if (groupSizePopover.style.display === 'none') {
+              setTimeout(updateButtonsDisplay, 50);
+            }
+          }
+        });
+      });
+      whoObserver.observe(groupSizePopover, { attributes: true, attributeFilter: ['style'] });
+    }
+
+    const filterInputs = [whereInput, whenInput, activityInput, whoInput];
+    filterInputs.forEach(input => {
+      if (input) {
+        input.addEventListener('change', updateButtonsDisplay);
+        const observer = new MutationObserver(function () {
+          updateButtonsDisplay();
+        });
+        observer.observe(input, { attributes: true, attributeFilter: ['value'] });
+      }
+    });
+
+    if (saveAsDefaultBtn) {
+      saveAsDefaultBtn.addEventListener('click', function () {
+        // Save current filter configuration as default
+      });
+    }
+
+    if (restoreBtn) {
+      restoreBtn.addEventListener('click', function () {
+        whenFilterSelected = false;
+        whoFilterSelected = false;
+        updateButtonsDisplay();
+      });
+    }
+
+    if (filterMenuBtn) {
+      filterMenuBtn.addEventListener('click', function () {
+        // Show filter menu options
+      });
+    }
+
+    document.addEventListener('click', function (event) {
+      const segmentsWithDropdowns = [
+        document.getElementById('search-where'),
+        document.getElementById('search-when'),
+        document.getElementById('search-activity'),
+        document.getElementById('search-who'),
+        myFeedsDropdownMenu
+      ];
+
+      const clickInsideSegment = segmentsWithDropdowns.some(segment => segment && segment.contains(event.target));
+
+      if (!clickInsideSegment) {
+        closeAllDropdowns(null);
+      }
+    });
+
+    const activeNav = document.querySelector('.nav-btn.active');
+    if (activeNav) {
+      handleNavClick({ currentTarget: activeNav });
+    }
+
+    const mobileNavItems = document.querySelectorAll('.mobile-bottom-nav .mobile-nav-item');
+    const unifiedSearchStartBtnMobile = document.getElementById('unified-search-start-btn-mobile');
+    const mobileMyFeedsSelector = document.getElementById('mobile-my-feeds-selector');
+    const mobileFilterIconContainer = document.getElementById('mobile-filter-icon-container');
+    const mobileFeedsDropdown = document.getElementById('mobile-feeds-dropdown');
+    const selectedFeedNameMobile = document.getElementById('selected-feed-name-mobile');
+    const mobileFeedOptions = document.querySelectorAll('.mobile-feeds-dropdown .mobile-feed-option');
+    const mobileViewFeedButton = document.getElementById('mobile-view-feed-button');
+
+    mobileNavItems.forEach(item => {
+      item.addEventListener('click', function () {
+        mobileNavItems.forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+
+        const clickedItemText = this.querySelector('span').textContent.trim();
+
+        if (clickedItemText === 'My Feeds') {
+          unifiedSearchStartBtnMobile.style.display = 'none';
+          mobileMyFeedsSelector.style.display = 'flex';
+          if (mobileFilterIconContainer) mobileFilterIconContainer.style.display = 'flex';
+          selectedFeedNameMobile.textContent = 'All feeds';
+          if (mobileViewFeedButton) mobileViewFeedButton.style.display = 'none';
+        } else {
+          unifiedSearchStartBtnMobile.style.display = 'flex';
+          mobileMyFeedsSelector.style.display = 'none';
+          mobileFeedsDropdown.style.display = 'none';
+          if (mobileFilterIconContainer) mobileFilterIconContainer.style.display = 'none';
+          if (mobileViewFeedButton) mobileViewFeedButton.style.display = 'none';
+        }
+      });
+    });
+
+    if (mobileMyFeedsSelector) {
+      mobileMyFeedsSelector.addEventListener('click', function () {
+        const isDropdownVisible = mobileFeedsDropdown.style.display === 'block';
+        mobileFeedsDropdown.style.display = isDropdownVisible ? 'none' : 'block';
+      });
+    }
+
+    mobileFeedOptions.forEach(option => {
+      option.addEventListener('click', function (event) {
+        event.stopPropagation();
+        const selectedValue = this.dataset.value;
+        selectedFeedNameMobile.textContent = selectedValue;
+        mobileFeedsDropdown.style.display = 'none';
+        if (mobileViewFeedButton) {
+          if (selectedValue === 'All feeds') {
+            mobileViewFeedButton.style.display = 'none';
+          } else {
+            mobileViewFeedButton.style.display = 'flex';
+          }
+        }
+      });
+    });
+
+    document.addEventListener('click', function (event) {
+      if (mobileFeedsDropdown && mobileMyFeedsSelector) {
+        const isClickInsideSelector = mobileMyFeedsSelector.contains(event.target);
+        const isClickInsideDropdown = mobileFeedsDropdown.contains(event.target);
+        if (!isClickInsideSelector && !isClickInsideDropdown) {
+          mobileFeedsDropdown.style.display = 'none';
+        }
+      }
+    });
+  }
+
+  initSaveFeedModal();
+  initNavigationAndFilters();
 
 });
