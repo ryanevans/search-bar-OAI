@@ -140,14 +140,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const fNameInput = modalNode.querySelector('#feedNameInput');
 
         if (target === sSaveBtn) {
-            console.log('Save Feed: Save button clicked');
-            if(fNameInput) fNameInput.value = ''; 
+            if(fNameInput) fNameInput.value = '';
             closeModal('saveFeedModalOverlay');
         }
         if (target === sClearBtn) {
-            console.log('Save Feed: Clear button clicked');
             if(fNameInput) fNameInput.value = '';
-            // Note: Clear usually doesn't close the modal, so no closeModal here
+            // Note: Clear usually doesn't close the modal
         }
     }
 
@@ -1236,8 +1234,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   if (sendInvitesBtn) {
     sendInvitesBtn.addEventListener('click', () => {
-      console.log('Send Invites button clicked. Placeholder for actual invite logic.');
-      // Potentially close modal or show success message
+      // Placeholder for actual invite logic
     });
   }
 

@@ -187,6 +187,37 @@ body {
   border-radius: 1.5px;
 }
 
+/* New navigation underline approach */
+.nav-btn {
+  position: relative;
+  font-weight: normal;
+  color: var(--color-text-secondary);
+}
+
+.nav-btn.active {
+  font-weight: bold;
+  color: var(--color-black);
+}
+
+.nav-underline {
+  display: none;
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: black;
+  border-radius: 1.5px;
+}
+
+.nav-btn.active .nav-underline {
+  display: block;
+}
+
+#explore-btn::after {
+  display: none !important;
+}
+
 .header-user-menu img {
   height: 30px; /* Adjust as needed */
   border-radius: 50%;
@@ -1638,14 +1669,14 @@ main.wrapper {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  max-width: 960px; /* Default max-width */
+  max-width: 1020px; /* Default max-width */
   margin: 0 auto; /* Center the container */
   transition: max-width 0.3s ease-in-out; /* Smooth transition for width change */
 }
 
 /* Increase max-width when 'My Feeds' filter is active */
 .unified-search-bar-container:has(.unified-search-bar.my-feeds-filter-active) {
-  max-width: 1080px; /* Increased max-width */
+  max-width: 1140px; /* Increased max-width */
 }
 
 /* Full width border underneath the search bar container */
@@ -1877,7 +1908,7 @@ button#mobile-view-feed-button .bookmark-button-inner img.bookmark-icon-img {
 /* My Feed Pill styles */
 .my-feed-pill-container {
   display: none; /* Hidden by default, shown by JS when My Feeds is active */
-  margin-bottom: var(--space-sm);
+  margin-bottom: 0; /* Align with search bar */
   position: relative;
   z-index: 1002; /* Ensure dropdown appears above other elements */
 }
@@ -1888,12 +1919,13 @@ button#mobile-view-feed-button .bookmark-button-inner img.bookmark-icon-img {
   background-color: var(--color-white);
   border: 1px solid var(--color-border-light);
   border-radius: 50px;
-  padding: 8px 16px;
+  padding: 10px 20px;
+  min-height: 44px;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
   transition: background-color 0.2s ease, border-color 0.2s ease;
-  min-width: 180px; /* Added min-width to ensure pill has enough space */
-}
+  min-width: 180px; /* Ensure pill has enough space */
+  }
 
 .my-feed-pill:hover {
   background-color: #f8f9fa;
@@ -1945,6 +1977,23 @@ button#mobile-view-feed-button .bookmark-button-inner img.bookmark-icon-img {
   display: flex;
   align-items: center;
   gap: var(--space-xs); /* Reduced from var(--space-sm) */
+}
+
+#filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+#filter-actions .btn,
+#filter-actions .filter-menu-icon-container {
+  display: flex;
+  align-items: center;
+}
+
+.btn-filter-action {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
 }
 
 /* Ghost button style */
