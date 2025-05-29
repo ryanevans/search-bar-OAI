@@ -11,74 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css" />
 
-  <style>
-    /* Ensure the main container arranges its children (My Feeds pill, Filter Actions) when My Feeds is active */
-    /* Ensure the main container has enough width and proper spacing */
-    .unified-search-bar-container {
-      display: flex;
-      align-items: center; /* Vertically align My Feeds pill and Filter Actions */
-      gap: 12px; /* Space between children, e.g., MyFeedsPill and FilterActions */
-      /* Override the max-width from style.css to make search bar wider */
-      max-width: 1020px !important; /* Default max-width increased from 960px */
-    }
-    
-    /* When 'My Feeds' filter is active, make it even wider */
-    .unified-search-bar-container:has(.unified-search-bar.my-feeds-filter-active) {
-      max-width: 1140px !important; /* Increased from 1080px */
-    }
-    
-    /* Ensure the search bar itself expands properly */
-    .unified-search-bar {
-      flex-grow: 1;
-      flex-basis: 0;
-      min-width: 0; /* Prevent overflow */
-    }
 
-    /* Ensure pill container aligns perfectly with the unified search bar */
-    .my-feed-pill-container {
-      display: flex;
-      align-items: center;
-      margin-bottom: 0 !important; /* Override any margin from style.css */
-    }
-    
-    /* 1. More left padding for "My feeds" dropdown */
-    .my-feed-pill {
-      /* Match padding with the search bar segment */
-      padding: 10px 20px !important; /* vertical 10px | horizontal 20px */
-      display: flex;
-      align-items: center;
-      /* Match the exact height of the search bar */
-      min-height: 44px;
-      box-sizing: border-box;
-      margin: 0;
-    }
-
-    /* 2. Height and vertical alignment handled by .unified-search-bar-container's align-items: center 
-       and .my-feed-pill's own flex properties. Specific height for .my-feed-pill can be added if needed. */
-
-    /* 3. Reduce space between "Save as default", "Restore", and icon */
-    #filter-actions { /* This is the filter-actions-container */
-      display: flex !important; /* Script might set this, but ensure it for CSS specificity */
-      align-items: center !important; /* Ensure vertical alignment of buttons and icon */
-      gap: 4px; /* Further reduced space between items */
-    }
-
-    /* Optional: Standardize height/appearance of buttons and icon within filter-actions */
-    #filter-actions .btn,
-    #filter-actions .filter-menu-icon-container {
-      /* Adjust height/padding if needed to align well with .my-feed-pill */
-      /* e.g., height: 38px; */
-      display: flex;
-      align-items: center;
-    }
-    #filter-actions .btn-filter-action {
-        padding-top: 0.25rem; /* Adjust padding for desired button height */
-        padding-bottom: 0.25rem;
-    }
-    /* #filter-actions .filter-menu-icon-container img { */
-      /* vertical-align: middle; /* Good for inline content, but parent is flex */
-    /* } */
-  </style>
 </head>
 
 <body class="page-event-listing">
@@ -920,39 +853,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- Custom styles for navigation underline -->
-<style>
-  .nav-btn {
-    position: relative;
-    font-weight: normal;
-    color: var(--color-text-secondary);
-  }
-  
-  .nav-btn.active {
-    font-weight: bold;
-    color: var(--color-black);
-  }
-  
-  .nav-underline {
-    display: none;
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background-color: black;
-    border-radius: 1.5px;
-  }
-  
-  .nav-btn.active .nav-underline {
-    display: block;
-  }
-  
-  /* Override the default explore button underline */
-  #explore-btn::after {
-    display: none !important;
-  }
-</style>
+
 
 <!-- Navigation underline and My Feeds filter functionality -->
 <script>
@@ -1016,25 +917,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Check if any filters have values
   function checkFiltersActive() {
-    // Log the values for debugging
-    console.log('Filter values:', {
-      'where': whereInput?.value,
-      'when': whenInput?.value,
-      'activity': activityInput?.value,
-      'who': whoInput?.value,
-      'myFeed': myFeedValue?.textContent,
-      'whenFilterSelected': whenFilterSelected,
-      'whoFilterSelected': whoFilterSelected
-    });
     
     // Special handling: also consider 'When' or 'Who' filter selected based on our direct tracking
     if (whenFilterSelected) {
-      console.log('When filter considered active from direct tracking');
       return true;
     }
     
     if (whoFilterSelected) {
-      console.log('Who filter considered active from direct tracking');
       return true;
     }
     
@@ -1055,27 +944,22 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!isMyFeedsActive) return;
     
     filtersActive = checkFiltersActive();
-    console.log('Filters active:', filtersActive);
     
     if (filtersActive) {
       // If filters are active, show the filter action buttons and hide Share Feed button
       if (filterActionButtons) {
         filterActionButtons.style.display = 'flex';
-        console.log('Showing filter action buttons');
       }
       if (saveFeedBtn) {
         saveFeedBtn.style.display = 'none';
-        console.log('Hiding Share Feed button');
       }
     } else {
       // If no filters are active, show the Share Feed button and hide filter action buttons
       if (filterActionButtons) {
         filterActionButtons.style.display = 'none';
-        console.log('Hiding filter action buttons');
       }
       if (saveFeedBtn) {
         saveFeedBtn.style.display = 'inline-flex';
-        console.log('Showing Share Feed button');
       }
     }
   }
@@ -1143,7 +1027,6 @@ document.addEventListener('DOMContentLoaded', function() {
   function forceUIUpdate() {
     setTimeout(function() {
       updateButtonsDisplay();
-      console.log('Forced UI update');
     }, 200);
   }
   
@@ -1152,7 +1035,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const searchSegments = document.querySelectorAll('.search-bar-segment');
   searchSegments.forEach(segment => {
     segment.addEventListener('click', function() {
-      console.log('Search segment clicked:', segment.id);
       forceUIUpdate();
     });
   });
@@ -1204,7 +1086,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Method 1: Direct handling for when segment click
   if (whenSegment) {
     whenSegment.addEventListener('click', function() {
-      console.log('When segment clicked directly');
       // Set direct flag to indicate when filter is being used
       whenFilterSelected = true;
       updateButtonsDisplay();
@@ -1215,7 +1096,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const dateOptions = document.querySelectorAll('.date-option-checkbox');
   dateOptions.forEach(option => {
     option.addEventListener('change', function() {
-      console.log('Date checkbox changed');
       whenFilterSelected = true;
       setTimeout(updateButtonsDisplay, 50);
     });
@@ -1225,7 +1105,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const dateOptionLabels = document.querySelectorAll('.date-option-label');
   dateOptionLabels.forEach(label => {
     label.addEventListener('click', function() {
-      console.log('Date option clicked');
       whenFilterSelected = true;
       setTimeout(updateButtonsDisplay, 100);
     });
@@ -1238,12 +1117,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (mutation.attributeName === 'style') {
           if (whenDropdown.style.display === 'block') {
             // Dropdown was opened
-            console.log('When dropdown opened');
             whenFilterSelected = true;
             updateButtonsDisplay();
           } else if (whenDropdown.style.display === 'none') {
             // Dropdown was closed, which might indicate a selection was made
-            console.log('When dropdown closed');
             setTimeout(updateButtonsDisplay, 50);
           }
         }
@@ -1257,7 +1134,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const activityOptions = document.querySelectorAll('.activity-option-checkbox');
   activityOptions.forEach(option => {
     option.addEventListener('change', function() {
-      console.log('Activity checkbox changed');
       setTimeout(updateButtonsDisplay, 50);
     });
   });
@@ -1266,7 +1142,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const activityOptionsButtons = document.querySelectorAll('.activity-option-item');
   activityOptionsButtons.forEach(button => {
     button.addEventListener('click', function() {
-      console.log('Activity option clicked');
       setTimeout(updateButtonsDisplay, 100);
     });
   });
@@ -1276,7 +1151,6 @@ document.addEventListener('DOMContentLoaded', function() {
       mutations.forEach(mutation => {
         if (mutation.attributeName === 'style' && activityDropdown.style.display === 'none') {
           // Dropdown was just closed, which might indicate a selection was made
-          console.log('Activity dropdown closed');
           setTimeout(updateButtonsDisplay, 50);
         }
       });
@@ -1291,7 +1165,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Method 1: Direct handling for who segment click
   if (whoSegment) {
     whoSegment.addEventListener('click', function() {
-      console.log('Who segment clicked directly');
       // Set direct flag to indicate who filter is being used
       whoFilterSelected = true;
       updateButtonsDisplay();
@@ -1302,7 +1175,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const groupSizeButtons = document.querySelectorAll('.btn-stepper');
   groupSizeButtons.forEach(button => {
     button.addEventListener('click', function() {
-      console.log('Group size button clicked');
       whoFilterSelected = true;
       setTimeout(updateButtonsDisplay, 50);
     });
@@ -1315,12 +1187,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (mutation.attributeName === 'style') {
           if (groupSizePopover.style.display === 'block') {
             // Popover was opened
-            console.log('Who popover opened');
             whoFilterSelected = true;
             updateButtonsDisplay();
           } else if (groupSizePopover.style.display === 'none') {
             // Popover was closed
-            console.log('Who popover closed');
             setTimeout(updateButtonsDisplay, 50);
           }
         }
@@ -1345,14 +1215,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // Add click handlers for the action buttons
   if (saveAsDefaultBtn) {
     saveAsDefaultBtn.addEventListener('click', function() {
-      console.log('Save as default clicked');
       // Logic to save current filter configuration as default would go here
     });
   }
   
   if (restoreBtn) {
     restoreBtn.addEventListener('click', function() {
-      console.log('Restore clicked');
       // Logic to restore default filters would go here
       // Also reset filter flags when filters are restored
       whenFilterSelected = false;
@@ -1363,7 +1231,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
   if (filterMenuBtn) {
     filterMenuBtn.addEventListener('click', function() {
-      console.log('Filter menu clicked');
       // Logic to show filter menu options would go here
     });
   }
@@ -1453,7 +1320,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
       // Placeholder: Logic to apply filters for the selected feed
-      // console.log('Selected mobile feed:', selectedValue);
       // Example: applyFeedFilters(selectedValue);
     });
   });
