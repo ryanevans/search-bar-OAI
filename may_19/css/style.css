@@ -187,6 +187,37 @@ body {
   border-radius: 1.5px;
 }
 
+/* New navigation underline approach */
+.nav-btn {
+  position: relative;
+  font-weight: normal;
+  color: var(--color-text-secondary);
+}
+
+.nav-btn.active {
+  font-weight: bold;
+  color: var(--color-black);
+}
+
+.nav-underline {
+  display: none;
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: black;
+  border-radius: 1.5px;
+}
+
+.nav-btn.active .nav-underline {
+  display: block;
+}
+
+#explore-btn::after {
+  display: none !important;
+}
+
 .header-user-menu img {
   height: 30px; /* Adjust as needed */
   border-radius: 50%;
@@ -1638,14 +1669,14 @@ main.wrapper {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  max-width: 960px; /* Default max-width */
+  max-width: 1020px; /* Default max-width */
   margin: 0 auto; /* Center the container */
   transition: max-width 0.3s ease-in-out; /* Smooth transition for width change */
 }
 
 /* Increase max-width when 'My Feeds' filter is active */
 .unified-search-bar-container:has(.unified-search-bar.my-feeds-filter-active) {
-  max-width: 1080px; /* Increased max-width */
+  max-width: 1140px; /* Increased max-width */
 }
 
 /* Full width border underneath the search bar container */
@@ -1877,7 +1908,7 @@ button#mobile-view-feed-button .bookmark-button-inner img.bookmark-icon-img {
 /* My Feed Pill styles */
 .my-feed-pill-container {
   display: none; /* Hidden by default, shown by JS when My Feeds is active */
-  margin-bottom: var(--space-sm);
+  margin-bottom: 0; /* Align with search bar */
   position: relative;
   z-index: 1002; /* Ensure dropdown appears above other elements */
 }
@@ -1888,12 +1919,13 @@ button#mobile-view-feed-button .bookmark-button-inner img.bookmark-icon-img {
   background-color: var(--color-white);
   border: 1px solid var(--color-border-light);
   border-radius: 50px;
-  padding: 8px 16px;
+  padding: 10px 20px;
+  min-height: 44px;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
   transition: background-color 0.2s ease, border-color 0.2s ease;
-  min-width: 180px; /* Added min-width to ensure pill has enough space */
-}
+  min-width: 180px; /* Ensure pill has enough space */
+  }
 
 .my-feed-pill:hover {
   background-color: #f8f9fa;
@@ -1945,6 +1977,23 @@ button#mobile-view-feed-button .bookmark-button-inner img.bookmark-icon-img {
   display: flex;
   align-items: center;
   gap: var(--space-xs); /* Reduced from var(--space-sm) */
+}
+
+#filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+#filter-actions .btn,
+#filter-actions .filter-menu-icon-container {
+  display: flex;
+  align-items: center;
+}
+
+.btn-filter-action {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
 }
 
 /* Ghost button style */
@@ -2329,3 +2378,185 @@ button#mobile-view-feed-button .bookmark-button-inner img.bookmark-icon-img {
    My current HTML has button inside the .unified-search-bar.
 */
 
+#search-btn-applied-filters-display {
+  display: none;
+  text-align: center;
+  width: 100%;
+}
+.filter-display-line-1 {
+  font-weight: bold;
+}
+#separator-location-activity,
+#separator-when-group {
+  display: none;
+}
+#mobile-filter-icon-container {
+  display: none;
+  margin-right: 8px;
+}
+#selected-feed-name-mobile {
+  font-weight: bold;
+  color: var(--color-text-primary);
+}
+#mobile-view-feed-button {
+  display: none;
+  margin-left: 8px;
+}
+.bookmark-button-inner {
+  padding: 9px;
+}
+#mobile-bookmark-button {
+  display: none;
+}
+#my-feed-pill-container {
+  display: none;
+}
+#my-feeds-dropdown-menu,
+#where-dropdown-menu,
+#when-dropdown-menu,
+#activity-dropdown-menu,
+#group-size-popover {
+  display: none;
+}
+.search-bar-button svg {
+  display: block;
+}
+#unified-save-feed-btn {
+  display: none;
+}
+#unified-save-feed-btn img {
+  margin-left: 8px;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}
+#filter-action-buttons {
+  display: none;
+}
+#filter-action-buttons img {
+  width: 18px;
+  height: 18px;
+}
+#mobile-custom-filter-notice {
+  display: none;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 0.85rem;
+  width: 100%;
+}
+#mobile-restore-feed-defaults {
+  margin-left: 8px;
+  color: var(--color-accent-interactive);
+  text-decoration: underline;
+}
+#saveFeedModalOverlay .modal-content {
+  padding-left: 0;
+  padding-right: 0;
+}
+#saveFeedModalOverlay .modal-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+#modalCloseBtn {
+  position: static;
+  order: -1;
+  float: none;
+  margin-left: 0;
+  margin-right: 1rem;
+  right: auto;
+}
+#saveFeedModalTitle {
+  flex-grow: 1;
+  text-align: center;
+  margin: 0;
+  font-size: 1.25rem;
+}
+#saveFeedModalOverlay .modal-body {
+  padding: 1rem;
+}
+#saveFeedModalOverlay .form-group {
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+#feedNameLabel {
+  position: absolute;
+  left: 16px;
+  top: 14px;
+  font-size: 1rem;
+  color: #6c757d;
+  pointer-events: none;
+  transition: all 0.15s ease-out;
+  background-color: transparent;
+  padding: 0;
+}
+#feedNameInput {
+  border: 1px solid #ced4da;
+  padding: 22px 15px 8px 15px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 4px;
+  outline: none;
+}
+#feedNameCharCount {
+  margin-top: 4px;
+  display: inline-block;
+}
+#saveFeedModalOverlay .modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-top: 1px solid #dee2e6;
+}
+#modalClearBtn {
+  font-weight: bold;
+  text-decoration: none;
+}
+#saveFeedConfirmBtn[disabled] {
+  background-color: #e9ecef;
+  color: #adb5bd;
+  border: 1px solid #ced4da;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: not-allowed;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+#personalMessageContent {
+  display: none;
+}
+#sendInvitesBtn {
+  margin-top: 10px;
+  width: 100%;
+}
+#mobile-filter-overlay {
+  display: none;
+}
+#mobile-filter-feed-info-container {
+  display: none;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 0 2px;
+}
+#mobile-filter-active-feed-name-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+#edit-feed-preferences-link {
+  font-size: 0.85rem;
+  color: var(--color-accent-interactive);
+  text-decoration: none;
+  white-space: nowrap;
+  margin-left: 10px;
+  display: inline-flex;
+  align-items: center;
+}
+#timeframe-accordion-panel,
+#activity-accordion-panel {
+  display: none;
+}
